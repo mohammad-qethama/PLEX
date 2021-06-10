@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require ('jsonwebtoken');
-const SECRET = process.env.SECRET;
+
 
 let UsersSchema = new mongoose.Schema(
   {
@@ -26,7 +26,12 @@ UsersSchema.pre('save', async function () {
 
 UsersSchema.virtual('token').get(function () {
   //TODO
+  let tokenObject = {
+    username: this.username,
+  };
+  return jwt.sign(tokenObject, process.env.SECRET );
 });
+
 UsersSchema.virtual('cabailites').get(function () {
   //TODO
 });
@@ -47,7 +52,8 @@ UsersSchema.statics.basicAuth = async function (username, password) {
 //Static method for bearer token
 UsersSchema.statics.bearerAuth = async function (token) {
   //TODO
-  let payload = jwt.verify (token , SECRET);
+  let payload = jwt.verify (token , process.env.SECRET);
+  // console.log(payload);
   return await this.findOne ({username : payload.username});
 };
 

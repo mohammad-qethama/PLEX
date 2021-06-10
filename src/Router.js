@@ -34,7 +34,12 @@ router.post('/signin',basicAuth,(req,res,next)=>{
 });
 
 router.get ('/user' , bearer , (req,res)=>{
-  res.status(200).json({user : req.user.username});
+
+  const user={
+    user:req.user,
+  };
+
+  res.status(200).json({user : user });
 });
 
 

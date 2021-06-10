@@ -7,8 +7,9 @@ module.exports = async (req,res,next)=>{
   }else {
     try {
       let token = req.headers.authorization.split(' ').pop();
-      let user = userModel.bearerAuth (token);
+      let user = await userModel.bearerAuth (token);
       if (user){
+        // console.log(user);
         req.user = user;
         next ();
       }else {
