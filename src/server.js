@@ -1,10 +1,10 @@
 'use strict';
-//requiering modules
+//requiring modules
 const router = require('./Router');
 const notFound = require('./errors/404');
 const internalError = require('./errors/500');
 
-// requireing express to start the server
+// requiring express to start the server
 const express = require('express');
 const app = express();
 const cors = require('cors');
