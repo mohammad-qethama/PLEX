@@ -19,10 +19,6 @@ const socket = require('socket.io');
 const io = socket(server, {
   cors: { origin: '*' },
 });
-const { ExpressPeerServer } = require('peer');
-const peerServer = ExpressPeerServer(server, {
-  debug: true,
-});
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -32,7 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 //routes
 app.use(router);
-app.use('/peerjs', peerServer);
 //catchalls
 app.use('*', notFound);
 app.use(internalError);
