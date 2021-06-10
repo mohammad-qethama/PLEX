@@ -10,7 +10,6 @@
 ## Summary of the Idea 
 A web app that enables you to view and attend upcoming events as well as creating your own, users can host events on the app where they can share their screens and cameras.
 ​
-​
 ## Problem domain 
 We need a website to view a wide range of events to attend even if they are public or private, and for those who want to host an event and invite people to attend it, Plex can help to find those events easily.
 Software Requirements
