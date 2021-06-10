@@ -31,5 +31,5 @@ to give our clients one place to stay informed of virtual online events taking p
 
 ## Developer Stories
 
-1. As a developer, I want to have the ability to sign in using regular signin and using oath.
+1. As a developer, I want to have the ability to sign in using regular sign in and using oath.
 2. As a developer I want to have my own api for events, and the user can publish events to the api.
