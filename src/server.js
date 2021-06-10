@@ -28,9 +28,17 @@ app.use(router);
 app.use('*', notFound);
 app.use(internalError);
 
-module.exports = port => {
-  app.listen(port, () => {
-    console.log('Server is up . . . ');
-    console.log(`Server is working at http://localhost:${port}`);
-  });
+// module.exports = port => {
+//   app.listen(port, () => {
+//     console.log('Server is up . . . ');
+//     console.log(`Server is working at http://localhost:${port}`);
+//   });
+// };
+
+module.exports={
+  app:app,
+  start:(port)=>{
+    const PORT=port||4000;
+    app.listen(PORT, ()=> console.log(`hello from port ${PORT}`));
+  },
 };
