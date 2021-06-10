@@ -1,10 +1,12 @@
 'use strict';
 
 const socket = io();
-const peer = new Peer({
-  host: 'plex-jo.herokuapp.com/', // exclude protocol
-  secure: true,
+let peer = new Peer(undefined, {
+  path: '/peerjs',
+  host: 'plex-jo.herokuapp.com/',
+  port: '443',
 });
+
 const myVideo = document.createElement('video');
 const videoGrid = document.getElementById('video-grid');
 let room = window.location.href.split('/')[3];
