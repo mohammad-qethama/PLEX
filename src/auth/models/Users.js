@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require ('jsonwebtoken');
+const SECRET = process.env.SECRET;
 
 let UsersSchema = new mongoose.Schema(
   {
@@ -43,8 +45,10 @@ UsersSchema.statics.basicAuth = async function (username, password) {
   throw new Error ('Invalid User or password!');
 };
 //Static method for bearer token
-UsersSchema.statics.bearerAuth = function (token) {
+UsersSchema.statics.bearerAuth = async function (token) {
   //TODO
+  let payload = jwt.verify (token , SECRET);
+  return await this.findOne ({username : payload.username});
 };
 
 const UserModel = mongoose.model('User', UsersSchema);

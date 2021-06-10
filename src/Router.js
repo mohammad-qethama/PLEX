@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const UserModel=require('./auth/models/Users.js');
 const basicAuth=require('./auth/middlewares/basic.js');
+const bearer = require('./auth/middlewares/bearer.js');
 
 router.get('/', rootHandler);
 function rootHandler(req, res) {
@@ -32,7 +33,9 @@ router.post('/signin',basicAuth,(req,res,next)=>{
   res.status(200).json(user);
 });
 
-
+router.get ('/user' , bearer , (req,res)=>{
+  res.status(200).json({user : req.user.username});
+});
 
 
 
