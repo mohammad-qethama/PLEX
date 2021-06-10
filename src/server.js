@@ -34,3 +34,12 @@ module.exports = port => {
     console.log(`Server is working at http://localhost:${port}`);
   });
 };
+
+// module.exports = {
+//   server : app,
+//   start : (port) => {
+//     app.listen(port, () => {
+//       console.log('Server is up . . . ');
+//       console.log(`Server is working at http://localhost:${port}`);});
+//   },
+// };
