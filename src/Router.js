@@ -21,7 +21,6 @@ const client = new OAuth2Client(CLIENT_ID);
 //new
 
 
-const path = require('path');
 const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
 
@@ -101,11 +100,11 @@ router.get('/googlelogout',(req,res)=>{
 });//new
 
 
-//facebook 
-router.get('/facebooklogin', facebookOAuth, (req, res) => {
+// facebook 
+// router.get('/facebooklogin', facebookOAuth, (req, res) => {
 
-  res.json({ token: req.token, user: req.user });
-});
+//   res.json({ token: req.token, user: req.user });
+// });
 
 
 

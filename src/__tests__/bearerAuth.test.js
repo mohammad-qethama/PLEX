@@ -7,9 +7,9 @@ const User = require('../auth/models/Users');
 const jwt= require('jsonwebtoken');
 process.env.SECRET='bearer';
 const router = require ('../Router.js');
-const {server} = require ('../server.js');
+const {app} = require ('../server.js');
 const supergoose =require('@code-fellows/supergoose');
-const mockRequest = supergoose(server);
+const mockRequest = supergoose(app);
 
 let users={
   admin: {
