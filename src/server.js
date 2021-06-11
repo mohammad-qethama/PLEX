@@ -1,10 +1,10 @@
 'use strict';
-//requiering modules
+//requiring modules
 const router = require('./Router');
 const notFound = require('./errors/404');
 const internalError = require('./errors/500');
 
-// requireing express to start the server
+// requiring express to start the server
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -32,6 +32,7 @@ app.use(router);
 app.use('*', notFound);
 app.use(internalError);
 
+
 io.on('connection', socket => {
   socket.on('join-room', (roomId, userId) => {
     console.log(roomId);
@@ -43,10 +44,10 @@ io.on('connection', socket => {
     });
   });
 });
-
-module.exports = port => {
-  server.listen(port, () => {
-    console.log('Server is up . . . ');
-    console.log(`Server is working at http://localhost:${port}`);
-  });
+module.exports={
+  app:app,
+  start:(port)=>{
+    const PORT=port||4000;
+    server.listen(PORT, ()=> console.log(`hello from port ${PORT}`));
+  },
 };
