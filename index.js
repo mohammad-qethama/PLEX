@@ -12,5 +12,6 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    server(PORT);
+
+    server.start(PORT);
   });
