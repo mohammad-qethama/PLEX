@@ -4,11 +4,15 @@ const router = express.Router();
 
 const UserModel=require('./auth/models/Users.js');
 const basicAuth=require('./auth/middlewares/basic.js');
+
+const bearer = require('./auth/middlewares/bearer.js');
+
 const path = require('path');
 const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
 
 const roomValidator = require('./auth/middlewares/roomValidiator');
+
 
 
 
@@ -35,7 +39,14 @@ router.post('/signin',basicAuth,(req,res,next)=>{
   res.status(200).json(user);
 });
 
+router.get ('/user' , bearer , (req,res)=>{
 
+  const user={
+    user:req.user,
+  };
+
+  res.status(200).json({user : user });
+});
 
 router.get('/', rootHandler);
 router.post('/ctreatRoom', createRoom);

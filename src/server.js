@@ -51,3 +51,12 @@ module.exports={
     server.listen(PORT, ()=> console.log(`hello from port ${PORT}`));
   },
 };
+
+// module.exports = {
+//   server : app,
+//   start : (port) => {
+//     app.listen(port, () => {
+//       console.log('Server is up . . . ');
+//       console.log(`Server is working at http://localhost:${port}`);});
+//   },
+// };
