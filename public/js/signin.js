@@ -22,8 +22,12 @@ $('#formSubmit').submit(function (e) {
     headers: header,
     credentials: 'include',
   });
-  fetch(req).then(response => {
-    if (response.ok) window.location = 'home.html';
-    else throw new Error('Bad HTTP request ');
+  fetch(req).then(async response => {
+    let userObject = await response.json();
+    console.log(userObject);
+    let token = userObject.token;
+    document.cookie = `token=${token}`;
+    // if (response.ok) window.location = 'home.html';
+    // else throw new Error('Bad HTTP request ');
   });
 });

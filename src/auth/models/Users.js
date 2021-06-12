@@ -40,10 +40,10 @@ UsersSchema.virtual('cabailites').get(function () {
 UsersSchema.statics.basicAuth = async function (username, password) {
   //TODO
   const user= await this.findOne({username});
-  console.log('after', user);
+  // console.log('after', user);
   const valid= await bcrypt.compare(password, user.password);
  
-  console.log('valid', valid);
+  // console.log('valid', valid);
   if (valid){
     return user;
   }

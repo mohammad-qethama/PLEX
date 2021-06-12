@@ -4,30 +4,28 @@ const router = express.Router();
 
 const UserModel = require('./auth/models/Users.js');
 const basicAuth = require('./auth/middlewares/basic.js');
-
+const isLogged = require('./auth/middlewares/isLogged');
 const bearer = require('./auth/middlewares/bearer.js');
-require('dotenv').config();//new
+require('dotenv').config(); //new
 
-const path=require('path');//new
+const path = require('path'); //new
 
-const googleAuth= require('../src/auth/middlewares/googleAuth');//new
+const googleAuth = require('../src/auth/middlewares/googleAuth'); //new
 
-const facebookOAuth=require('../src/auth/middlewares/facebookAuth');//new facebook
+const facebookOAuth = require('../src/auth/middlewares/facebookAuth'); //new facebook
 
 //googleOauth
-const {OAuth2Client} = require('google-auth-library');
-const CLIENT_ID =process.env.CLIENT_ID;
+const { OAuth2Client } = require('google-auth-library');
+const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 //new
 
-const DataCollection=require('../src/auth/models/dataCollection');//api
+const DataCollection = require('../src/auth/models/dataCollection'); //api
 
-const EventSchema=require('../src/auth/models/Events');//api
+const EventSchema = require('../src/auth/models/Events'); //api
 
-const fs=require('fs');//api
-const models=new Map();//api
-
-
+const fs = require('fs'); //api
+const models = new Map(); //api
 
 const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
@@ -36,13 +34,7 @@ const roomValidator = require('./auth/middlewares/roomValidiator');
 
 const { model } = require('mongoose');
 
-
-
-
-
-
 router.post('/signup', async (req, res, next) => {
-
   try {
     let user = new UserModel(req.body);
     const userRecord = await user.save();
@@ -57,30 +49,31 @@ router.post('/signup', async (req, res, next) => {
 });
 
 router.post('/signin', basicAuth, (req, res, next) => {
-  const user = {
+  const userObject = {
     user: req.user,
     token: req.user.token,
   };
-  res.end();
+  res.json(userObject);
 });
 
-router.get('/user', bearer, (req, res) => {
+router.get('/user', isLogged, (req, res) => {
   const user = {
-    user: req.user,
+    user: 'fixed',
   };
 
   res.status(200).json({ user: user });
 });
 
-router.get('/protected',googleAuth,(req,res)=>{//googleAuth
+router.get('/protected', googleAuth, (req, res) => {
+  //googleAuth
   res.send('this is protected route');
-});//new 
+}); //new
 
-router.get('/login',(req,res)=>{
+router.get('/login', (req, res) => {
   res.sendFile('auth.html', { root: path.join(__dirname, '../public') });
-});//new
+}); //new
 
-router.post('/login',(req,res)=>{
+router.post('/login', (req, res) => {
   let token = req.body.token;
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -94,61 +87,57 @@ router.post('/login',(req,res)=>{
     .then(() => {
       res.cookie('session-token', token);
       res.redirect('/profile');
-
     })
     .catch(console.error);
-});//new
+}); //new
 
-
-router.get('/profile',googleAuth,(req,res)=>{
-  let user=req.user;
+router.get('/profile', googleAuth, (req, res) => {
+  let user = req.user;
+  console.log(req.cookies['token']);
   res.send(user);
-});//new
+}); //new
 
-router.get('/googlelogout',(req,res)=>{
+router.get('/googlelogout', (req, res) => {
   res.clearCookie('session-token');
   res.redirect('/login');
-});//new
+}); //new
 
-
-// facebook 
+// facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {
-
-  res.json({ token: req.token, user: req.user });
+  res.cookie('session-token',req.token).redirect();
+  // res.cookie('session-token',req.token).json({ token: req.token, user: req.user });
+  // res.json({ token: req.token, user: req.user });
 });
 
-
-
 //api
-router.post('/createEvent',creatEventHandler);
-router.get('/getEvents',getAllEventHandler);
-router.get('/getEvents/:id',getEventHandler);
+router.post('/createEvent', creatEventHandler);
+router.get('/getEvents', getAllEventHandler);
+router.get('/getEvents/:id', getEventHandler);
 
-const dataManager=new DataCollection(EventSchema);
+const dataManager = new DataCollection(EventSchema);
 
-async function creatEventHandler(req,res){
-  try{
-    let obj= req.body;
-    let record=await dataManager.create(obj);
+async function creatEventHandler(req, res) {
+  try {
+    let obj = req.body;
+    let record = await dataManager.create(obj);
     res.status(201).json(record);
-  }catch(e){
-    return console.log(e) ;
+  } catch (e) {
+    return console.log(e);
   }
 }
 
-async function getAllEventHandler (req,res){
-  let allRecords= await dataManager.get();
+async function getAllEventHandler(req, res) {
+  let allRecords = await dataManager.get();
   res.status(200).json(allRecords);
 }
 
-async function getEventHandler(req,res){
+async function getEventHandler(req, res) {
   const id = req.params.id;
   let record = await dataManager.get(id);
   res.status(200).json(record);
 }
 
 // /api
-
 
 router.get('/', rootHandler);
 router.post('/ctreatRoom', createRoom);
