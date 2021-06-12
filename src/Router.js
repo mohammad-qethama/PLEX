@@ -73,7 +73,7 @@ router.get('/login', (req, res) => {
   res.sendFile('auth.html', { root: path.join(__dirname, '../public') });
 }); //new
 
-router.post('/login', async (req, res) => {
+router.post('/login', (req, res) => {
   let token = req.body.token;
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -82,14 +82,7 @@ router.post('/login', async (req, res) => {
     });
     const payload = ticket.getPayload();
     const userid = payload['sub'];
-    const username = payload.email;
-    const password = '1111';
-    let obj = {
-      username : username,
-      password : password,
-    };
-    let user = new UserModel(obj);
-    const userRecord = await user.save();
+    
   }
   verify()
     .then(() => {
@@ -105,9 +98,9 @@ router.get('/profile', googleAuth, (req, res) => {
   res.send(user);
 }); //new
 
-router.get('/googlelogout', (req, res) => {
+router.get('/logout', (req, res) => {
   res.clearCookie('session-token');
-  res.redirect('/login');
+  res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
 }); //new
 
 // facebook
