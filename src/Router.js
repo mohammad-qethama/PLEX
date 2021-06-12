@@ -20,12 +20,29 @@ const CLIENT_ID =process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 //new
 
+const DataCollection=require('../src/auth/models/dataCollection');//api
+
+const EventSchema=require('../src/auth/models/Events');//api
+
+const fs=require('fs');//api
+const models=new Map();//api
+
+
 
 const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
 
 const roomValidator = require('./auth/middlewares/roomValidiator');
+
+const { model } = require('mongoose');
+
+
+
+
+
+
 router.post('/signup', async (req, res, next) => {
+
   try {
     let user = new UserModel(req.body);
     const userRecord = await user.save();
@@ -102,6 +119,35 @@ router.get('/googlelogout',(req,res)=>{
 
 
 
+//api
+router.post('/createEvent',creatEventHandler);
+router.get('/getEvents',getAllEventHandler);
+router.get('/getEvents/:id',getEventHandler);
+
+const dataManager=new DataCollection(EventSchema);
+
+async function creatEventHandler(req,res){
+  try{
+    let obj= req.body;
+    let record=await dataManager.create(obj);
+    res.status(201).json(record);
+  }catch(e){
+    return console.log(e) ;
+  }
+}
+
+async function getAllEventHandler (req,res){
+  let allRecords= await dataManager.get();
+  res.status(200).json(allRecords);
+}
+
+async function getEventHandler(req,res){
+  const id = req.params.id;
+  let record = await dataManager.get(id);
+  res.status(200).json(record);
+}
+
+// /api
 
 
 router.get('/', rootHandler);
