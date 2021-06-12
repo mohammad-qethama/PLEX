@@ -13,7 +13,7 @@ function onSignIn(googleUser) {
   xhr.onload = function () {
     // console.log('Signed in as: ' + xhr.responseText);
     if (xhr.responseText == 'success') {
-      signOut();
+      // signOut();
       location.assign('/profile');
     }
   };

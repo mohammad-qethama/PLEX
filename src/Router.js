@@ -36,12 +36,12 @@ const { model } = require('mongoose');
 
 router.post('/signup', async (req, res, next) => {
   try {
-    let user = new UserModel(req.body);
-    const userRecord = await user.save();
-    const output = {
-      user: userRecord,
-      token: userRecord.token,
-    };
+    let user = new UserModel(req.body); // news
+    const userRecord = await user.save(); // news
+    const output = { //news
+      user: userRecord, //news 
+      token: userRecord.token, // news
+    }; // news
     res.redirect('/signin.html');
   } catch (error) {
     next(error.message);
@@ -73,7 +73,7 @@ router.get('/login', (req, res) => {
   res.sendFile('auth.html', { root: path.join(__dirname, '../public') });
 }); //new
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   let token = req.body.token;
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -82,6 +82,14 @@ router.post('/login', (req, res) => {
     });
     const payload = ticket.getPayload();
     const userid = payload['sub'];
+    const username = payload.email;
+    const password = '1111';
+    let obj = {
+      username : username,
+      password : password,
+    };
+    let user = new UserModel(obj);
+    const userRecord = await user.save();
   }
   verify()
     .then(() => {
