@@ -3,14 +3,15 @@
 const authorizeUrl = 'https://www.facebook.com/v10.0/dialog/oauth';
 const options = {
   client_id: 517100576141220,
-  redirect_uri: 'http://localhost:3000/facebooklogin',
+  redirect_uri: 'https://plex-jo.herokuapp.com/facebooklogin',
   state: 'some_random_string',
 };
-const queryString = Object.keys(options).map(key=>{
-  return `${key}=${encodeURIComponent(options[key])}`;
-}).join('&');
+const queryString = Object.keys(options)
+  .map(key => {
+    return `${key}=${encodeURIComponent(options[key])}`;
+  })
+  .join('&');
 console.log('query string', queryString);
 const authUrl = `${authorizeUrl}?${queryString}`;
 const a = document.getElementById('login');
 a.setAttribute('href', authUrl);
-
