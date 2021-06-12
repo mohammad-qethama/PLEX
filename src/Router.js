@@ -36,12 +36,12 @@ const { model } = require('mongoose');
 
 router.post('/signup', async (req, res, next) => {
   try {
-    let user = new UserModel(req.body); // news
-    const userRecord = await user.save(); // news
-    const output = { //news
-      user: userRecord, //news 
-      token: userRecord.token, // news
-    }; // news
+    let user = new UserModel(req.body); 
+    const userRecord = await user.save(); 
+    const output = { 
+      user: userRecord, 
+      token: userRecord.token, 
+    }; 
     res.redirect('/signin.html');
   } catch (error) {
     next(error.message);
@@ -67,13 +67,13 @@ router.get('/user', isLogged, (req, res) => {
 router.get('/protected', googleAuth, (req, res) => {
   //googleAuth
   res.send('this is protected route');
-}); //new
+}); 
 
 router.get('/login', (req, res) => {
   res.sendFile('auth.html', { root: path.join(__dirname, '../public') });
-}); //new
+}); 
 
-router.post('/login', (req, res) => {
+router.post('/login',(req, res) => {
   let token = req.body.token;
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -86,22 +86,23 @@ router.post('/login', (req, res) => {
   }
   verify()
     .then(() => {
-      res.cookie('session-token', token);
-      res.redirect('/profile');
-    })
+      res.cookie('session-token', token).redirect ('/profile');    })
     .catch(console.error);
-}); //new
+});
 
 router.get('/profile', googleAuth, (req, res) => {
   let user = req.user;
-  console.log(req.cookies['token']);
-  res.send(user);
-}); //new
+  // console.log(req.cookies['token']);
+  res.end(); // new
+  // res.send(user);
+});
 
 router.get('/logout', (req, res) => {
-  res.clearCookie('session-token');
+  res.clearCookie('session-token'); // new
+  res.clearCookie('token'); // new
+
   res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
-}); //new
+});
 
 // facebook
 // router.get('/facebooklogin', facebookOAuth, (req, res) => {
