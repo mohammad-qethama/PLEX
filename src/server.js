@@ -4,6 +4,7 @@ const router = require('./Router');
 const notFound = require('./errors/404');
 const internalError = require('./errors/500');
 
+
 // requiring express to start the server
 const express = require('express');
 const app = express();
@@ -13,6 +14,9 @@ const peer = require('peer');
 const morgan = require('morgan');
 const multer = require('multer');
 const multParse = multer();
+
+const cookieParser=require('cookie-parser');//new
+
 
 const server = require('http').createServer(app);
 const socket = require('socket.io');
@@ -25,6 +29,15 @@ app.use(morgan('dev'));
 app.use(multParse.none());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+
+app.use(express.static('./public'));//new
+
+
+
+app.use(cookieParser());//new
+
 app.use(express.static(path.join(__dirname, '../public')));
 //routes
 app.use(router);
