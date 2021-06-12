@@ -112,10 +112,10 @@ router.get('/googlelogout',(req,res)=>{
 
 
 // facebook 
-// router.get('/facebooklogin', facebookOAuth, (req, res) => {
+router.get('/facebooklogin', facebookOAuth, (req, res) => {
 
-//   res.json({ token: req.token, user: req.user });
-// });
+  res.json({ token: req.token, user: req.user });
+});
 
 
 
