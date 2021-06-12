@@ -2,8 +2,8 @@
 const express = require('express');
 const router = express.Router();
 
-const UserModel=require('./auth/models/Users.js');
-const basicAuth=require('./auth/middlewares/basic.js');
+const UserModel = require('./auth/models/Users.js');
+const basicAuth = require('./auth/middlewares/basic.js');
 
 const bearer = require('./auth/middlewares/bearer.js');
 
@@ -12,40 +12,34 @@ const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
 
 const roomValidator = require('./auth/middlewares/roomValidiator');
-
-
-
-
-router.post('/signup',async (req,res,next)=>{
+router.post('/signup', async (req, res, next) => {
   try {
-    let user= new UserModel(req.body);
-    const userRecord= await user.save();
-    const output={
-      user:userRecord,
-      token:userRecord.token,
+    let user = new UserModel(req.body);
+    const userRecord = await user.save();
+    const output = {
+      user: userRecord,
+      token: userRecord.token,
     };
-    res.status(201).json(output);
-  } 
-  catch (error) {
+    res.redirect('/signin.html');
+  } catch (error) {
     next(error.message);
   }
 });
 
-router.post('/signin',basicAuth,(req,res,next)=>{
-  const user={
-    user:req.user,
-    token:req.user.token,
+router.post('/signin', basicAuth, (req, res, next) => {
+  const user = {
+    user: req.user,
+    token: req.user.token,
   };
-  res.status(200).json(user);
+  res.end();
 });
 
-router.get ('/user' , bearer , (req,res)=>{
-
-  const user={
-    user:req.user,
+router.get('/user', bearer, (req, res) => {
+  const user = {
+    user: req.user,
   };
 
-  res.status(200).json({user : user });
+  res.status(200).json({ user: user });
 });
 
 router.get('/', rootHandler);
