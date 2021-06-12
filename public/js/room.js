@@ -1,6 +1,8 @@
 'use strict';
 
+// eslint-disable-next-line no-undef
 const socket = io();
+// eslint-disable-next-line no-undef
 const peer = new Peer();
 const myVideo = document.createElement('video');
 const videoGrid = document.getElementById('video-grid');

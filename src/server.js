@@ -32,7 +32,6 @@ app.use(router);
 app.use('*', notFound);
 app.use(internalError);
 
-
 io.on('connection', socket => {
   socket.on('join-room', (roomId, userId) => {
     console.log(roomId);
@@ -44,11 +43,14 @@ io.on('connection', socket => {
     });
   });
 });
-module.exports={
-  app:app,
-  start:(port)=>{
-    const PORT=port||4000;
-    server.listen(PORT, ()=> console.log(`hello from port ${PORT}`));
+module.exports = {
+  app: app,
+  start: port => {
+    const PORT = port || 4000;
+    server.listen(PORT, () => {
+      console.log('Server is up . . . ');
+      console.log(`Server is working at http://localhost:${port}`);
+    });
   },
 };
 
