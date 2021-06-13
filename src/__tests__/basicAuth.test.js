@@ -7,11 +7,15 @@ const request = supergoose(app);
 
 
 //arrange
-let users = {
+let users;
+beforeAll(()=>{
+  users = {
   username: 'Tamara',
   password: '12345',
   role:'user',
-};
+}; 
+})
+
 
 
 describe('Basic Auth testing', () => {

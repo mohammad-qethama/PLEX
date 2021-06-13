@@ -54,6 +54,7 @@ UsersSchema.statics.bearerAuth = async function (token) {
   //TODO
   let payload = jwt.verify (token , process.env.SECRET);
   // console.log(payload);
+  console.log('we are in bearer');
   return await this.findOne ({username : payload.username});
 };
 

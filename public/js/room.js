@@ -39,6 +39,10 @@ peer.on('open', id => {
   socket.emit('join-room', room, id);
 });
 
+socket.emit('chat', () => {
+
+  console.log('chat is ok');
+});
 function connectToNewUser(userId, stream) {
   const call = peer.call(userId, stream);
   const video = document.createElement('video');
