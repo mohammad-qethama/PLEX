@@ -7,7 +7,8 @@ const UserModel = require('../models/Users.js');
 
 const facebookLoginUrl = 'https://graph.facebook.com/v10.0/oauth/access_token';
 const remoteAPI = 'https://graph.facebook.com/me';
-const REDIRECT_URI = 'https://plex-jo.herokuapp.com/facebooklogin';
+// const REDIRECT_URI='https://plex-jo.herokuapp.com/facebooklogin';
+const REDIRECT_URI='http://localhost:3000/facebooklogin';
 const CLIENT_IDFacebook = process.env.CLIENT_IDFacebook;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
@@ -18,6 +19,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 module.exports = async (req, res, next) => {
   try {
     const code = req.query.code;
+    console.log('code', code);
     const remoteToken = await exchangeCode(code);
     const remoteUser = await getRemoteUserInfo(remoteToken);
     const [user, token] = await getUser(remoteUser);
@@ -50,11 +52,27 @@ async function getRemoteUserInfo(token) {
 }
 async function getUser(remoteUser) {
   const user = {
-    username: remoteUser.name,
+    username: remoteUser.name+remoteUser.id,
     password: '11111',
   };
-  const userObj = new UserModel(user);
-  const userDoc = await userObj.save();
-  const token = userDoc.token;
-  return [userDoc, token];
+  try{
+   
+    const document= await UserModel.findOne({username:user.username});
+    if (document){
+      const token = document.token;
+      return [document, token];
+    }
+    else{
+      const userObj = new UserModel(user);
+      const userDoc = await userObj.save();
+      // console.log('userDoc',userDoc);
+      const token = userDoc.token;
+      return [userDoc, token];
+    }
+   
+  }
+  catch(e){
+    console.log(e);
+  }
+
 }

@@ -105,10 +105,11 @@ router.get('/logout', (req, res) => {
 });
 
 // facebook
-// router.get('/facebooklogin', facebookOAuth, (req, res) => {
-
-//   res.json({ token: req.token, user: req.user });
-// });
+router.get('/facebooklogin', facebookOAuth, (req, res) => {
+  res.cookie('session-token',req.token).redirect();
+  // res.cookie('session-token',req.token).json({ token: req.token, user: req.user });
+  // res.json({ token: req.token, user: req.user });
+});
 
 //api
 router.post('/createEvent', creatEventHandler);

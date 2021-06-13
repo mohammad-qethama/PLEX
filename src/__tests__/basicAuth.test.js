@@ -19,9 +19,9 @@ describe('Basic Auth testing', () => {
   it('Can successfully POST to /signup to create a new user' ,async() => {
 
     const response = await request.post('/signup').send(users);
-    
-    expect(response.status).toBe(201);
-    expect(response.body.user.username).toBe(users.username);
+  
+    expect(response.status).toBe(302);
+    // expect(response.body.user.username).toBe(users.username);
 
   });
 
