@@ -139,8 +139,8 @@ async function getEventHandler(req, res) {
 // /api
 
 router.get('/', rootHandler);
-router.post('/ctreatRoom', createRoom);
-router.get('/:id', roomValidator, roomHandler);
+router.post('/ctreatRoom', isLogged,createRoom);
+router.get('/:id', isLogged,roomValidator,roomHandler);
 
 function rootHandler(req, res) {
   res.send('root is working');
@@ -151,9 +151,9 @@ function roomHandler(req, res) {
 async function createRoom(req, res) {
   let roomId = uuid();
   console.log(roomId);
-  let room = new Room({ roomId: roomId });
+  let room = new Room({ roomId: roomId ,owner: req.user.username });
   const record = await room.save();
-  console.log('record.roomId:', record.roomId);
+  console.log('record.roomId:', record.roomId ,record.owner );
   res.redirect(`/${record.roomId}`);
 }
 
