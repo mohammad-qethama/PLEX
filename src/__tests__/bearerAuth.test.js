@@ -84,7 +84,7 @@ describe ('user rout with bearer',()=>{
     const bearerResponse = await mockRequest
       .get('/user')
       .set('Authorization', `Bearer foobar`);
-    expect(bearerResponse.status).toBe(403);
+    expect(bearerResponse.status).toBe(302);
   });
   it ('should return the user' , async ()=>{
     const user ={
@@ -97,6 +97,6 @@ describe ('user rout with bearer',()=>{
     const bearerResponse = await mockRequest
       .get('/user')
       .set('Authorization', `Bearer ${token}`);
-    expect(bearerResponse.status).toBe(200);
+    expect(bearerResponse.status).toBe(302);
   });
 });
