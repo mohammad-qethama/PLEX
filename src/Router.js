@@ -36,12 +36,12 @@ const { model } = require('mongoose');
 
 router.post('/signup', async (req, res, next) => {
   try {
-    let user = new UserModel(req.body);
-    const userRecord = await user.save();
-    const output = {
-      user: userRecord,
-      token: userRecord.token,
-    };
+    let user = new UserModel(req.body); // news
+    const userRecord = await user.save(); // news
+    const output = { //news
+      user: userRecord, //news 
+      token: userRecord.token, // news
+    }; // news
     res.redirect('/signin.html');
   } catch (error) {
     next(error.message);
@@ -82,6 +82,7 @@ router.post('/login', (req, res) => {
     });
     const payload = ticket.getPayload();
     const userid = payload['sub'];
+    
   }
   verify()
     .then(() => {
@@ -97,9 +98,9 @@ router.get('/profile', googleAuth, (req, res) => {
   res.send(user);
 }); //new
 
-router.get('/googlelogout', (req, res) => {
+router.get('/logout', (req, res) => {
   res.clearCookie('session-token');
-  res.redirect('/login');
+  res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
 }); //new
 
 // facebook
