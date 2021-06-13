@@ -4,14 +4,16 @@ let peerConnection;
 const config = {
   iceServers: [
     {
-      'urls': 'stun:stun.l.google.com:19302',
+      urls: 'stun:us-turn8.xirsys.com',
     },
-    // {
-    //   "urls": "turn:TURN_IP?transport=tcp",
-    //   "username": "TURN_USERNAME",
-    //   "credential": "TURN_CREDENTIALS"
-    // }
-  ]
+    {
+      urls: 'turn:us-turn8.xirsys.com:3478?transport=tcp',
+      credential: '54fbcdb4-cc46-11eb-9d8b-0242ac140004',
+      username:
+        'X-RnFUzwJGtPhPLyAjRTlcCKOvaNUcpgaV3ci0ocT1i1-Y5wzE-rc9U6a7YrDe8GAAAAAGDF_8FpYnJhaGltYmFuYXQ=',
+      credentialType: 'password',
+    },
+  ],
 };
 
 const socket = io.connect(window.location.origin);

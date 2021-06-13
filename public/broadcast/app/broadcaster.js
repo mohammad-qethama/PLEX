@@ -3,20 +3,22 @@ const peerConnections = {};
 const config = {
   iceServers: [
     {
-      'urls': 'stun:stun.l.google.com:19302',
+      urls: 'stun:us-turn8.xirsys.com',
     },
-    // {
-    //   "urls": "turn:TURN_IP?transport=tcp",
-    //   "username": "TURN_USERNAME",
-    //   "credential": "TURN_CREDENTIALS"
-    // }
-  ]
+    {
+      urls: 'turn:us-turn8.xirsys.com:3478?transport=tcp',
+      credential: '54fbcdb4-cc46-11eb-9d8b-0242ac140004',
+      username:
+        'X-RnFUzwJGtPhPLyAjRTlcCKOvaNUcpgaV3ci0ocT1i1-Y5wzE-rc9U6a7YrDe8GAAAAAGDF_8FpYnJhaGltYmFuYXQ=',
+      credentialType: 'password',
+    },
+  ],
 };
 
 const socket = io.connect(window.location.origin);
 
 socket.on('answer', (id, description) => {
-  console.log({description});
+  console.log({ description });
   peerConnections[id].setRemoteDescription(description);
 });
 
@@ -32,7 +34,7 @@ socket.on('watcher', id => {
       socket.emit('candidate', id, event.candidate);
     }
   };
-  console.log({peerConnection});
+  console.log({ peerConnection });
 
   peerConnection
     .createOffer()
@@ -63,9 +65,7 @@ const videoSelect = document.querySelector('select#videoSource');
 audioSelect.onchange = getStream;
 videoSelect.onchange = getStream;
 
-getStream()
-  .then(getDevices)
-  .then(gotDevices);
+getStream().then(getDevices).then(gotDevices);
 
 function getDevices() {
   return navigator.mediaDevices.enumerateDevices();
@@ -96,7 +96,7 @@ function getStream() {
   const videoSource = videoSelect.value;
   const constraints = {
     audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
-    video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+    video: { deviceId: videoSource ? { exact: videoSource } : undefined },
   };
   return navigator.mediaDevices
     .getUserMedia(constraints)
