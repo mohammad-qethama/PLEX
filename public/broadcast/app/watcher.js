@@ -1,6 +1,8 @@
 'use strict';
 
 let peerConnection;
+const roomIdFromUrl = window.location.href;
+const actualRoomId = roomIdFromUrl.split('/')[3];
 const config = {
   iceServers: [
     {
@@ -21,7 +23,7 @@ const video = document.querySelector('video');
 const enableAudioButton = document.querySelector('#enable-audio');
 
 enableAudioButton.addEventListener('click', enableAudio);
-
+socket.emit('join-room', actualRoomId);
 socket.on('offer', (id, description) => {
   peerConnection = new RTCPeerConnection(config);
   peerConnection
@@ -48,11 +50,13 @@ socket.on('candidate', (id, candidate) => {
 });
 
 socket.on('connect', () => {
-  socket.emit('watcher');
+  console.log(actualRoomId);
+  socket.emit('watcher', actualRoomId);
 });
 
-socket.on('broadcaster', () => {
-  socket.emit('watcher');
+socket.on('broadcaster', roomId => {
+  console.log(roomId);
+  socket.emit('watcher', roomId);
 });
 
 window.onunload = window.onbeforeunload = () => {

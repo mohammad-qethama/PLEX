@@ -1,4 +1,6 @@
 'use strict';
+const roomIdFromUrl = window.location.href;
+const actualRoomId = roomIdFromUrl.split('/')[3];
 const peerConnections = {};
 const config = {
   iceServers: [
@@ -14,9 +16,10 @@ const config = {
     },
   ],
 };
-
+console.log(window.location.origin);
 const socket = io.connect(window.location.origin);
 
+socket.emit('join-room', actualRoomId);
 socket.on('answer', (id, description) => {
   console.log({ description });
   peerConnections[id].setRemoteDescription(description);
@@ -115,7 +118,7 @@ function gotStream(stream) {
     option => option.text === stream.getVideoTracks()[0].label
   );
   videoElement.srcObject = stream;
-  socket.emit('broadcaster');
+  socket.emit('broadcaster', { roomId: actualRoomId });
 }
 
 function handleError(error) {
