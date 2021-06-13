@@ -3,7 +3,7 @@
 const router = require('./Router');
 const notFound = require('./errors/404');
 const internalError = require('./errors/500');
-
+let broadcaster;
 
 // requiring express to start the server
 const express = require('express');
@@ -46,14 +46,40 @@ app.use('*', notFound);
 app.use(internalError);
 
 io.on('connection', socket => {
+  console.log('sadlife 112',socket.id);
   socket.on('join-room', (roomId, userId) => {
     console.log(roomId);
     socket.join(roomId);
     socket.broadcast.to(roomId).emit('user-connected', userId);
 
-    socket.on('disconnect', () => {
-      socket.broadcast.to(roomId).emit('user-disconnected', userId);
-    });
+  });
+  socket.on('broadcaster', () => {
+    console.log('broadcstier ID');
+    broadcaster = socket.id;
+    socket.broadcast.emit('broadcaster');
+  });
+  socket.on('watcher', () => {
+    console.log('watcher ');
+
+    socket.to(broadcaster).emit('watcher', socket.id);
+  });
+  socket.on('offer', (id, message) => {
+    console.log('offer ');
+
+    socket.to(id).emit('offer', socket.id, message);
+  });
+  socket.on('answer', (id, message) => {
+    console.log('answer ');
+
+    socket.to(id).emit('answer', socket.id, message);
+  });
+  socket.on('candidate', (id, message) => {
+    console.log('candidate ');
+
+    socket.to(id).emit('candidate', socket.id, message);
+  });
+  socket.on('disconnect', (roomId,userId) => {
+    socket.broadcast.to(roomId).emit('user-disconnected', userId);
   });
 });
 module.exports = {
