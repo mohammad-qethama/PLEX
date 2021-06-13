@@ -15,8 +15,7 @@ const morgan = require('morgan');
 const multer = require('multer');
 const multParse = multer();
 
-const cookieParser=require('cookie-parser');//new
-
+const cookieParser = require('cookie-parser'); //new
 
 const server = require('http').createServer(app);
 const socket = require('socket.io');
@@ -30,15 +29,12 @@ app.use(multParse.none());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static('./public')); //new
 
-
-app.use(express.static('./public'));//new
-
-
-
-app.use(cookieParser());//new
+app.use(cookieParser()); //new
 
 app.use(express.static(path.join(__dirname, '../public')));
+
 //routes
 app.use(router);
 //catchalls
@@ -46,12 +42,11 @@ app.use('*', notFound);
 app.use(internalError);
 
 io.on('connection', socket => {
-  console.log('sadlife 112',socket.id);
+  console.log('sadlife 112', socket.id);
   socket.on('join-room', (roomId, userId) => {
     console.log(roomId);
     socket.join(roomId);
     socket.broadcast.to(roomId).emit('user-connected', userId);
-
   });
   socket.on('broadcaster', () => {
     console.log('broadcstier ID');
@@ -78,7 +73,7 @@ io.on('connection', socket => {
 
     socket.to(id).emit('candidate', socket.id, message);
   });
-  socket.on('disconnect', (roomId,userId) => {
+  socket.on('disconnect', (roomId, userId) => {
     socket.broadcast.to(roomId).emit('user-disconnected', userId);
   });
 });

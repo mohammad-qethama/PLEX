@@ -62,6 +62,7 @@ const videoElement = document.querySelector('video');
 const audioSelect = document.querySelector('select#audioSource');
 const videoSelect = document.querySelector('select#videoSource');
 
+//fire event when the dropDown list changed.
 audioSelect.onchange = getStream;
 videoSelect.onchange = getStream;
 
@@ -87,6 +88,7 @@ function gotDevices(deviceInfos) {
 }
 
 function getStream() {
+  //getTracks: a sequence that represents all the MediaStreamTrack objects in this stream's
   if (window.stream) {
     window.stream.getTracks().forEach(track => {
       track.stop();
