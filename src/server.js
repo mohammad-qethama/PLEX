@@ -16,7 +16,7 @@ const peer = require('peer');
 const morgan = require('morgan');
 const multer = require('multer');
 const multParse = multer();
-
+const eventRoutes = require('./routes/events.js');
 const moment = require('moment');//chat
 
 const cookieParser = require('cookie-parser'); //new
@@ -40,6 +40,8 @@ app.use(cookieParser()); //new
 app.use(express.static(path.join(__dirname, '../public')));
 
 //routes
+app.use('/events',eventRoutes )
+
 app.use(router);
 //catchalls
 app.use('*', notFound);

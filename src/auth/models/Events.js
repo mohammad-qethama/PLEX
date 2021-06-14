@@ -14,5 +14,5 @@ let Event =new  mongoose.Schema(
   },
 );
 
-const EventModel = mongoose.model('Event', Event);
+const EventModel = mongoose.model('EventAuth', Event);
 module.exports = EventModel;
