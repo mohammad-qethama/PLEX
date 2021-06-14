@@ -1,7 +1,5 @@
 'use strict';
-
 const {expect}= require('@jest/globals');
-
 const bearer=require('../auth/middlewares/bearer');
 const User = require('../auth/models/Users');
 const jwt= require('jsonwebtoken');
@@ -10,21 +8,16 @@ const router = require ('../Router.js');
 const {app} = require ('../server.js');
 const supergoose =require('@code-fellows/supergoose');
 const mockRequest = supergoose(app);
-
 let users={
   admin: {
     username: 'admin',
     password:'123',
   },
 }; 
-
 beforeAll(async ()=>{
   await new User(users.admin).save();
 });
-
-
 describe('bearer test',()=>{
-
   const req= {};
   const res={
     status: jest.fn(()=>{
@@ -34,9 +27,7 @@ describe('bearer test',()=>{
       return res;
     }),
   };
-
   const next = jest.fn();
-
   describe('user Auth',()=>{
     it('should fail the login for the user admin with an incorrect token',()=>{
       req.headers={
@@ -47,7 +38,6 @@ describe('bearer test',()=>{
         expect(res.status).toHaveBeenCalledWith(403);  
       });
     });
-
     it('should login the user admin with an correct token',async()=>{
       const user ={
         username:'admin',
@@ -60,16 +50,9 @@ describe('bearer test',()=>{
         expect(next).toHaveBeenCalledWith();
       });
     });
-
   });
-
 });
-
-
-
-
 describe ('user rout with bearer',()=>{
-
   const req= {};
   const res={
     status: jest.fn(()=>{
@@ -79,7 +62,6 @@ describe ('user rout with bearer',()=>{
       return res;
     }),
   };
-
   it ('should fail to return the user' , async ()=>{
     const bearerResponse = await mockRequest
       .get('/user')
