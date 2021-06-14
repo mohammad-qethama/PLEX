@@ -9,9 +9,9 @@ const config = {
     },
     {
       urls: 'turn:us-turn8.xirsys.com:3478?transport=tcp',
-      credential: '9421fbe2-cc7f-11eb-ba89-0242ac140004',
+      credential: '37eb9e7e-cce2-11eb-95a4-0242ac140004',
       username:
-        'bkiPYTIbCGINKZWgmZhZTcMGuxn6Bw9vzb-bN-e63dm4s-7pCvKyywreCEiOBA7uAAAAAGDGX8xpYnJhaGltYmFuYXQ=',
+        'G40rsOuiwvtiWk2oZVZMCG_ZhPvc50GymscI-33xH1V8CaZ1Vt4KASOSxZ6uDPASAAAAAGDHBUlpYnJhaGltYmFuYXQ=',
       credentialType: 'password',
     },
   ],
