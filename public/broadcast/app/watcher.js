@@ -21,8 +21,10 @@ const config = {
 const socket = io.connect(window.location.origin);
 const video = document.querySelector('video');
 const enableAudioButton = document.querySelector('#enable-audio');
+const disableAudioButton = document.querySelector('#disable-audio');
 
 enableAudioButton.addEventListener('click', enableAudio);
+disableAudioButton.addEventListener('click', disableAudio);
 socket.emit('join-room', actualRoomId);
 socket.on('offer', (id, description) => {
   peerConnection = new RTCPeerConnection(config);
@@ -50,8 +52,10 @@ socket.on('candidate', (id, candidate) => {
 });
 
 socket.on('connect', () => {
+  let username = getCookie();
   console.log(actualRoomId);
   socket.emit('watcher', actualRoomId);
+  socket.emit('add-connected', { username, actualRoomId });
 });
 
 socket.on('broadcaster', roomId => {
@@ -67,4 +71,16 @@ window.onunload = window.onbeforeunload = () => {
 function enableAudio() {
   console.log('Enabling audio');
   video.muted = false;
+}
+function disableAudio() {
+  console.log('Enabling audio');
+  video.muted = true;
+}
+function getCookie() {
+  var arrayb = document.cookie.split(';');
+  for (const item of arrayb) {
+    if (item.startsWith('username=')) {
+      return item.substr(9);
+    }
+  }
 }
