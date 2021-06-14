@@ -4,23 +4,26 @@ const supergoose = require('@code-fellows/supergoose');
 const {app}  = require('../server.js');
 const basic = require('../auth/middlewares/basic.js');
 const request = supergoose(app);
-//arrange
-let users;
-beforeAll(()=>{
-  users = {
-  username: 'Tamara',
-  password: '12345',
-  role:'user',
-}; 
-})
+
 
 describe('Basic Auth testing', () => {
   it('Can successfully POST to /signup to create a new user' ,async() => {
+    //arrange
+    let users= {
+      username: 'Tamara',
+      password: '12345',
+      role:'user',
+    }; 
     const response = await request.post('/signup').send(users);
     expect(response.status).toBe(302);
-    // expect(response.body.user.username).toBe(users.username);
+
   });
   it('Can successfully POST to /signin to login as a user (use basic auth)', async() => {
+    let users= {
+      username: 'Tamara',
+      password: '12345',
+      role:'user',
+    }; 
     const response = await request.post('/signin').auth(users.username,users.password);
     expect(response.status).toBe(200);
     expect(response.body.user.username).toEqual(users.username);
