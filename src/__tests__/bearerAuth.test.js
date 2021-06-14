@@ -80,6 +80,7 @@ describe ('user rout with bearer',()=>{
     const bearerResponse = await mockRequest
       .get('/secret')
       .set('Authorization', `Bearer ${token}`);
+
     expect(bearerResponse.status).toBe(403);
   });//new
   it ('should return Not logged in user' , async ()=>{
@@ -91,4 +92,5 @@ describe ('user rout with bearer',()=>{
       .get('/secret')
     expect(bearerResponse.status).toBe(403);
   });//new
+
 });
