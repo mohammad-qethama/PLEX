@@ -45,62 +45,71 @@ app.use(router);
 app.use('*', notFound);
 app.use(internalError);
 const users = {};//chat
-// const {username}=require('./Router');//chat
+let chatId=10;//chat
+let roomMessages={};
 
 io.on('connection', socket => {
   socket.on('join-room', roomId => {
     socket.join(roomId);
-    socket.broadcast.to(roomId).emit('user-connected', userId);
+    // socket.broadcast.to(roomId).emit('user-connected', userId);
   });
 
-  socket.emit('test2');
+  socket.emit('test2', chatId );
+  socket.emit('old-messages',roomMessages);
   //chat
   socket.on('newUser',(payload)=>{
-    users[socket.id]=payload;
-    // console.log('last check ya rab',payload);
+    users[socket.id]=payload.cookies;
+    console.log('message Q',payload);
     socket.broadcast.emit('chat-user-connected', {
-      name: payload,
+      name: payload.cookies,
+      chatId:payload.chatId,
       time: moment().format('h:mm a'),
     });
   });
   //chat
   socket.on('message',(payload)=>{
-    // console.log('chat user connected',payload);
+    if(!roomMessages[payload.chatId]){
+      roomMessages[payload.chatId]=[];
+    }
+    roomMessages[payload.chatId]=[...roomMessages[payload.chatId],{ name: payload.theName,message: payload.message,time: moment().format('h:mm a')}];
+
+    console.log('messages*******', roomMessages);
+   
     socket.broadcast.emit('chat-message',payload);
   });//chat
-  
-  socket.on('broadcaster', roomId => {
-    console.log(roomId);
 
-    console.log('broadcstier ID');
-    broadcaster[roomId.roomId] = socket.id;
-    console.log('l54', broadcaster[roomId.roomId]);
+  // socket.on('broadcaster', roomId => {
+  //   console.log(roomId);
 
-    socket.broadcast.to(roomId.roomId).emit('broadcaster', roomId);
-  });
-  socket.on('watcher', roomId => {
-    console.log('watcher ');
+  //   console.log('broadcstier ID');
+  //   broadcaster[roomId.roomId] = socket.id;
+  //   console.log('l54', broadcaster[roomId.roomId]);
 
-    socket.to(broadcaster[roomId]).emit('watcher', socket.id);
-  });
-  socket.on('offer', (id, message) => {
-    console.log('offer ');
-    socket.to(id).emit('offer', socket.id, message);
-  });
-  socket.on('answer', (id, message) => {
-    console.log('answer ');
-    socket.to(id).emit('answer', socket.id, message);
-  });
-  socket.on('candidate', (id, message) => {
-    console.log('candidate ');
-    socket.to(id).emit('candidate', socket.id, message);
-  });
+  //   socket.broadcast.to(roomId.roomId).emit('broadcaster', roomId);
+  // });
+  // socket.on('watcher', roomId => {
+  //   console.log('watcher ');
+
+  //   socket.to(broadcaster[roomId]).emit('watcher', socket.id);
+  // });
+  // socket.on('offer', (id, message) => {
+  //   console.log('offer ');
+  //   socket.to(id).emit('offer', socket.id, message);
+  // });
+  // socket.on('answer', (id, message) => {
+  //   console.log('answer ');
+  //   socket.to(id).emit('answer', socket.id, message);
+  // });
+  // socket.on('candidate', (id, message) => {
+  //   console.log('candidate ');
+  //   socket.to(id).emit('candidate', socket.id, message);
+  // });
   socket.on('disconnect', (roomId, userId) => {
     socket.broadcast.to(roomId).emit('user-disconnected', userId);
   });
-  socket.on('chat', () => {
-    console.log('chat is delivered');
-  });
+  // socket.on('chat', () => {
+  //   console.log('chat is delivered');
+  // });
 });
 module.exports = {
   app: app,

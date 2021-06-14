@@ -99,13 +99,16 @@ router.get('/profile', googleAuth, (req, res) => {
 router.get('/logout', (req, res) => {
   res.clearCookie('session-token'); // new
   res.clearCookie('token'); // new
+  res.clearCookie('username'); 
   res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
 });
 // facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res.cookie('session-token', req.token).redirect();
+  res.cookie('session-token', req.token)
+  // .redirect();
+  
   // res.cookie('session-token',req.token).json({ token: req.token, user: req.user });
-  // res.json({ token: req.token, user: req.user });
+  res.json({ token: req.token, user: req.user });
 });
 //api
 router.post('/createEvent', creatEventHandler);
