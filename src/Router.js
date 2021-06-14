@@ -6,6 +6,7 @@ const UserModel = require('./auth/models/Users.js');
 const basicAuth = require('./auth/middlewares/basic.js');
 const isLogged = require('./auth/middlewares/isLogged');
 const bearer = require('./auth/middlewares/bearer.js');
+const checkOwner = require('./auth/middlewares/checkOwner');
 require('dotenv').config(); //new
 
 const path = require('path'); //new
@@ -33,15 +34,16 @@ const Room = require('./auth/models/Room');
 const roomValidator = require('./auth/middlewares/roomValidiator');
 
 const { model } = require('mongoose');
+router.use(express.static(path.join(__dirname, '../public/broadcast')));
 
 router.post('/signup', async (req, res, next) => {
   try {
-    let user = new UserModel(req.body); 
-    const userRecord = await user.save(); 
-    const output = { 
-      user: userRecord, 
-      token: userRecord.token, 
-    }; 
+    let user = new UserModel(req.body);
+    const userRecord = await user.save();
+    const output = {
+      user: userRecord,
+      token: userRecord.token,
+    };
     res.redirect('/signin.html');
   } catch (error) {
     next(error.message);
@@ -67,13 +69,13 @@ router.get('/user', isLogged, (req, res) => {
 router.get('/protected', googleAuth, (req, res) => {
   //googleAuth
   res.send('this is protected route');
-}); 
+});
 
 router.get('/login', (req, res) => {
   res.sendFile('auth.html', { root: path.join(__dirname, '../public') });
-}); 
+});
 
-router.post('/login',(req, res) => {
+router.post('/login', (req, res) => {
   let token = req.body.token;
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -82,11 +84,11 @@ router.post('/login',(req, res) => {
     });
     const payload = ticket.getPayload();
     const userid = payload['sub'];
-    
   }
   verify()
     .then(() => {
-      res.cookie('session-token', token).redirect ('/profile');    })
+      res.cookie('session-token', token).redirect('/profile');
+    })
     .catch(console.error);
 });
 
@@ -106,7 +108,7 @@ router.get('/logout', (req, res) => {
 
 // facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res.cookie('session-token',req.token).redirect();
+  res.cookie('session-token', req.token).redirect();
   // res.cookie('session-token',req.token).json({ token: req.token, user: req.user });
   // res.json({ token: req.token, user: req.user });
 });
@@ -142,21 +144,31 @@ async function getEventHandler(req, res) {
 // /api
 
 router.get('/', rootHandler);
-router.post('/ctreatRoom', isLogged,createRoom);
-router.get('/:id', isLogged,roomValidator,roomHandler);
+router.post('/ctreatRoom', isLogged, createRoom);
+router.get('/:id', isLogged, roomValidator, checkOwner, roomHandler);
 
 function rootHandler(req, res) {
   res.send('root is working');
 }
 function roomHandler(req, res) {
-  res.sendFile('room.html', { root: path.join(__dirname, '../public') });
+  // res.sendFile('broadcaster.html', {
+  //   root: path.join(__dirname, '../public/broadcast'),
+  // });
+  // res.render('broadcaster.html');
+  req.isOwner
+    ? res.sendFile('broadcaster.html', {
+        root: path.join(__dirname, '../public/broadcast'),
+      })
+    : res.sendFile('watcher.html', {
+        root: path.join(__dirname, '../public/broadcast'),
+      });
 }
 async function createRoom(req, res) {
   let roomId = uuid();
   console.log(roomId);
-  let room = new Room({ roomId: roomId ,owner: req.user.username });
+  let room = new Room({ roomId: roomId, owner: req.user.username });
   const record = await room.save();
-  console.log('record.roomId:', record.roomId ,record.owner );
+  console.log('record.roomId:', record.roomId, record.owner);
   res.redirect(`/${record.roomId}`);
 }
 

@@ -1,22 +1,27 @@
 'use strict';
+const roomIdFromUrl = window.location.href;
+const actualRoomId = roomIdFromUrl.split('/')[3];
 const peerConnections = {};
 const config = {
   iceServers: [
     {
-      'urls': 'stun:stun.l.google.com:19302',
+      urls: 'stun:us-turn8.xirsys.com',
     },
-    // {
-    //   "urls": "turn:TURN_IP?transport=tcp",
-    //   "username": "TURN_USERNAME",
-    //   "credential": "TURN_CREDENTIALS"
-    // }
-  ]
+    {
+      urls: 'turn:us-turn8.xirsys.com:3478?transport=tcp',
+      credential: '37eb9e7e-cce2-11eb-95a4-0242ac140004',
+      username:
+        'G40rsOuiwvtiWk2oZVZMCG_ZhPvc50GymscI-33xH1V8CaZ1Vt4KASOSxZ6uDPASAAAAAGDHBUlpYnJhaGltYmFuYXQ=',
+      credentialType: 'password',
+    },
+  ],
 };
-
+console.log(window.location.origin);
 const socket = io.connect(window.location.origin);
 
+socket.emit('join-room', actualRoomId);
 socket.on('answer', (id, description) => {
-  console.log({description});
+  console.log({ description });
   peerConnections[id].setRemoteDescription(description);
 });
 
@@ -32,7 +37,7 @@ socket.on('watcher', id => {
       socket.emit('candidate', id, event.candidate);
     }
   };
-  console.log({peerConnection});
+  console.log({ peerConnection });
 
   peerConnection
     .createOffer()
@@ -60,12 +65,11 @@ const videoElement = document.querySelector('video');
 const audioSelect = document.querySelector('select#audioSource');
 const videoSelect = document.querySelector('select#videoSource');
 
+//fire event when the dropDown list changed.
 audioSelect.onchange = getStream;
 videoSelect.onchange = getStream;
 
-getStream()
-  .then(getDevices)
-  .then(gotDevices);
+getStream().then(getDevices).then(gotDevices);
 
 function getDevices() {
   return navigator.mediaDevices.enumerateDevices();
@@ -87,6 +91,7 @@ function gotDevices(deviceInfos) {
 }
 
 function getStream() {
+  //getTracks: a sequence that represents all the MediaStreamTrack objects in this stream's
   if (window.stream) {
     window.stream.getTracks().forEach(track => {
       track.stop();
@@ -96,7 +101,7 @@ function getStream() {
   const videoSource = videoSelect.value;
   const constraints = {
     audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
-    video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+    video: { deviceId: videoSource ? { exact: videoSource } : undefined },
   };
   return navigator.mediaDevices
     .getUserMedia(constraints)
@@ -113,7 +118,7 @@ function gotStream(stream) {
     option => option.text === stream.getVideoTracks()[0].label
   );
   videoElement.srcObject = stream;
-  socket.emit('broadcaster');
+  socket.emit('broadcaster', { roomId: actualRoomId });
 }
 
 function handleError(error) {
