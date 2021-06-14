@@ -23,3 +23,25 @@ $('#send-container').on('submit',function(e) {
   $('#message-input').val('');
 });
 
+// console.log('cookies',cookies);
+socket.on('chat-message',payload=>{
+  console.log('inside chat message');
+  appendMessage(`${payload.theName} : ${payload.message}`);
+});//
+socket.emit('chat-connected',{
+  payload: 'neveen :(',
+});
+function getCookie() {
+  var arrayb = document.cookie.split(';');
+  for (const item of arrayb) {
+    if (item.startsWith('username=')){
+      return item.substr(9);
+    }
+  }
+}
+function appendMessage (message){
+  // const messageElement= document.createElement('div');
+  const messageElement=$(`<div></div>`).text(message);
+  // messageElement.textContent = message;
+  $('#message-container').append(messageElement);
+}
