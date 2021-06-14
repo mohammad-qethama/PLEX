@@ -5,11 +5,15 @@ const {app}  = require('../server.js');
 const basic = require('../auth/middlewares/basic.js');
 const request = supergoose(app);
 //arrange
-let users = {
+let users;
+beforeAll(()=>{
+  users = {
   username: 'Tamara',
   password: '12345',
   role:'user',
-};
+}; 
+})
+
 describe('Basic Auth testing', () => {
   it('Can successfully POST to /signup to create a new user' ,async() => {
     const response = await request.post('/signup').send(users);

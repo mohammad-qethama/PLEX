@@ -4,8 +4,8 @@ const router = require('./Router');
 const notFound = require('./errors/404');
 const internalError = require('./errors/500');
 
-let broadcaster = {};
 
+let broadcaster = {};
 
 // requiring express to start the server
 const express = require('express');
@@ -17,9 +17,9 @@ const morgan = require('morgan');
 const multer = require('multer');
 const multParse = multer();
 
+const moment = require('moment');//chat
 
 const cookieParser = require('cookie-parser'); //new
-
 
 const server = require('http').createServer(app);
 const socket = require('socket.io');
@@ -44,13 +44,34 @@ app.use(router);
 //catchalls
 app.use('*', notFound);
 app.use(internalError);
+const users = {};//chat
+// const {username}=require('./Router');//chat
+
 io.on('connection', socket => {
   socket.on('join-room', roomId => {
     socket.join(roomId);
     socket.broadcast.to(roomId).emit('user-connected', userId);
   });
+
+  socket.emit('test2');
+  //chat
+  socket.on('newUser',(payload)=>{
+    users[socket.id]=payload;
+    // console.log('last check ya rab',payload);
+    socket.broadcast.emit('chat-user-connected', {
+      name: payload,
+      time: moment().format('h:mm a'),
+    });
+  });
+  //chat
+  socket.on('message',(payload)=>{
+    // console.log('chat user connected',payload);
+    socket.broadcast.emit('chat-message',payload);
+  });//chat
+  
   socket.on('broadcaster', roomId => {
     console.log(roomId);
+
     console.log('broadcstier ID');
     broadcaster[roomId.roomId] = socket.id;
     console.log('l54', broadcaster[roomId.roomId]);
@@ -59,6 +80,7 @@ io.on('connection', socket => {
   });
   socket.on('watcher', roomId => {
     console.log('watcher ');
+
     socket.to(broadcaster[roomId]).emit('watcher', socket.id);
   });
   socket.on('offer', (id, message) => {
