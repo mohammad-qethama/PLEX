@@ -77,10 +77,18 @@ function disableAudio() {
   video.muted = true;
 }
 function getCookie() {
-  var arrayb = document.cookie.split(';');
+  console.log(document.cookie);
+  var arrayb = document.cookie.split('; ');
+  // console.log('from get cookies:', arrayb);
   for (const item of arrayb) {
     if (item.startsWith('username=')) {
+      console.log(item);
       return item.substr(9);
     }
+    // if (item.startsWith(' username=')) {
+    //   console.log(item.substr(10));
+
+    //   return item.substr(10);
+    // }
   }
 }

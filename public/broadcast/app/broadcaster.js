@@ -162,8 +162,10 @@ function remove(event) {
 }
 function getCookie() {
   var arrayb = document.cookie.split(';');
+  console.log('from get cookies:', arrayb);
   for (const item of arrayb) {
     if (item.startsWith('username=')) {
+      console.log(item.substr(9));
       return item.substr(9);
     }
   }

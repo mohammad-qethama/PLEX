@@ -12,7 +12,7 @@ function onSignIn(googleUser) {
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onload = function () {
     // console.log('Signed in as: ' + xhr.responseText);
-    if (xhr.responseText == 'success') {
+    if (xhr.responseText === 'success') {
       // signOut();
       location.assign('/profile');
     }
