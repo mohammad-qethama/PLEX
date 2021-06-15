@@ -24,9 +24,7 @@ const Room = require('./auth/models/Room');
 const roomValidator = require('./auth/middlewares/roomValidiator');
 const { model } = require('mongoose');
 
-
 router.use(express.static(path.join(__dirname, '../public/broadcast')));
-
 
 router.post('/signup', async (req, res, next) => {
   try {
@@ -41,15 +39,15 @@ router.post('/signup', async (req, res, next) => {
     next(error.message);
   }
 });
-let name;//
+let name; //
 router.post('/signin', basicAuth, (req, res, next) => {
   const userObject = {
     user: req.user,
     token: req.user.token,
   };
-  res.cookie('username',req.user.username);//chat
+  res.cookie('username', req.user.username); //chat
   // console.log(userObject);
-  name=userObject.user.username;//chat
+  name = userObject.user.username; //chat
   // console.log('inside router check name',name);
   res.json(userObject);
   // res.send(userObject);
@@ -63,12 +61,12 @@ router.get('/user', isLogged, (req, res) => {
 router.get('/protected', googleAuth, (req, res) => {
   //googleAuth
   res.send('this is protected route');
-}); 
-router.get('/secret',bearer,(req,res)=>{
+});
+router.get('/secret', bearer, (req, res) => {
   // console.log('hi');
- //  res.send('hi');
-   res.json(req.user)
- })//test
+  //  res.send('hi');
+  res.json(req.user);
+}); //test
 
 router.get('/login', (req, res) => {
   res.sendFile('auth.html', { root: path.join(__dirname, '../public') });
@@ -110,7 +108,9 @@ router.post('/login', (req, res) => {
 router.get('/logout', (req, res) => {
   res.clearCookie('session-token'); // new
   res.clearCookie('token'); // new
-  res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
+  res.clearCookie('username');
+  // res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
+  res.redirect('/signin.html');
 });
 // facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {

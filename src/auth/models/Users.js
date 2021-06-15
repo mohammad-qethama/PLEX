@@ -32,7 +32,13 @@ UsersSchema.virtual('token').get(function () {
   return jwt.sign(tokenObject, process.env.SECRET );
 });
 
-UsersSchema.virtual('cabailites').get(function () {
+UsersSchema.virtual('capabilities').get(function () {
+  let acl = {
+    user: ['read','create'],
+    editor: ['read', 'create', 'update'],
+    admin: ['read', 'create', 'update', 'delete']
+  };
+  return acl[this.role];
   //TODO
 });
 

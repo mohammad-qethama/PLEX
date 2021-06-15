@@ -1,5 +1,20 @@
 'use strict';
-
 const mongoose = require('mongoose');
 
-const EventsSchema = new mongoose.Schema({});
+
+let Event =new  mongoose.Schema(
+  {
+    name:{type:String,required:true},
+    description:{type:String},
+    from:{type:String,required:true },
+    end : {type:String,required:true },
+    attendance_limit:{type : Number ,required:true , default:0}, 
+    address :{type: String ,required:true},
+    catagories:{type:String, required:true},
+    type:{type:String ,enum:['online','real_word'],default:'online',required:true},
+    room_owner:{type:String,required:true,},
+  },
+);
+
+const EventModel = mongoose.model('Event', Event);
+module.exports = EventModel;

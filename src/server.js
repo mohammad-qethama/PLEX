@@ -5,6 +5,10 @@ const notFound = require('./errors/404');
 const internalError = require('./errors/500');
 
 let broadcaster = {};
+const roomsIds = {};
+const roomsMassages = {};
+const users = {};
+
 // let usersConnected = [];
 // requiring express to start the server
 const express = require('express');
@@ -16,7 +20,9 @@ const morgan = require('morgan');
 const multer = require('multer');
 const multParse = multer();
 
-const moment = require('moment'); //chat
+const eventRoutes = require('./routes/events.js');
+const moment = require('moment');//chat
+
 
 const cookieParser = require('cookie-parser'); //new
 
@@ -38,19 +44,58 @@ app.use(cookieParser()); //new
 app.use(express.static(path.join(__dirname, '../public')));
 
 //routes
+app.use('/events',eventRoutes )
+
 app.use(router);
 //catchalls
 app.use('*', notFound);
 app.use(internalError);
-const users = {}; //chat
+
 // const {username}=require('./Router');//chat
 
 io.on('connection', socket => {
-  socket.on('join-room', roomId => {
-    socket.join(roomId);
+  socket.on('join-room', payload => {
+    socket.join(payload.roomId);
+    roomsIds[socket.id] = payload.roomId;
+
+    io.to(payload).emit('hello', {
+      roomId: payload.roomId,
+      cookies: payload.cookies,
+    });
     // socket.broadcast.to(roomId).emit('user-connected', userId);
   });
+  //****************** */
+  socket.on('new-user', payload => {
+    socket.emit('old_massage', { message: roomsMassages[payload.roomId] });
+    console.log('********************', roomsMassages[payload.roomId]);
+    users[socket.id] = payload.name;
+    socket.broadcast.to(payload.roomId).emit('user-connected', {
+      name: payload.name,
+      time: moment().format('h:mm a'),
+    });
+  });
+  socket.on('send-chat-message', payload => {
+    if (!roomsMassages[payload.roomId]) {
+      roomsMassages[payload.roomId] = [];
+    }
 
+    roomsMassages[payload.roomId] = [
+      ...roomsMassages[payload.roomId],
+      {
+        message: payload.message,
+        name: users[socket.id],
+        time: moment().format('h:mm a'),
+      },
+    ];
+
+    socket.broadcast.to(payload.roomId).emit('chat-message', {
+      message: payload.message,
+      name: users[socket.id],
+      time: moment().format('h:mm a'),
+    });
+  });
+
+  //*************** */
   //chat
   socket.on('newUser', payload => {
     users[socket.id] = payload;
@@ -99,6 +144,19 @@ io.on('connection', socket => {
         .emit('remove-user', socket.username.username);
       socket.to(socket.username.roomId).emit('disconnectPeer', socket.id);
     }
+
+    /******************* */
+    const roomId = roomsIds[socket.id];
+
+    socket.broadcast.to(roomId).emit('user-disconnected', {
+      name: users[socket.id],
+      time: moment().format('h:mm a'),
+    });
+    if (!io.sockets.adapter.rooms.get(roomId)) {
+      delete roomsMassages[roomId];
+    }
+    delete users[socket.id];
+    /*********************** */
   });
   socket.on('chat', () => {
     console.log('chat is delivered');
@@ -117,13 +175,13 @@ io.on('connection', socket => {
       roomId: payload.actualRoomId,
     };
     console.log(socket.username);
-    // usersConnected.push(payload.username);
-    // let usersList = [...new Set(usersConnected)];
+
     socket
       .to(payload.actualRoomId)
       .emit('users', { username: payload.username, soketId: socket.id });
   });
 });
+
 module.exports = {
   app: app,
   start: port => {
@@ -134,11 +192,3 @@ module.exports = {
     });
   },
 };
-// module.exports = {
-//   server : app,
-//   start : (port) => {
-//     app.listen(port, () => {
-//       console.log('Server is up . . . ');
-//       console.log(`Server is working at http://localhost:${port}`);});
-//   },
-// };
