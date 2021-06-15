@@ -148,12 +148,14 @@ router.get('/:id', isLogged, roomValidator, checkOwner, roomHandler);
 
 function rootHandler(req, res) {
   res.send('root is working');
+  // res.sendFile('index.html', { root: path.join(__dirname, '../public') });;
 }
 function roomHandler(req, res) {
   // res.sendFile('broadcaster.html', {
   //   root: path.join(__dirname, '../public/broadcast'),
   // });
   // res.render('broadcaster.html');
+  console.log ('request params' , req.params)
   req.isOwner
     ? res.sendFile('broadcaster.html', {
         root: path.join(__dirname, '../public/broadcast'),
