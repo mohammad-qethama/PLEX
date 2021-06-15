@@ -18,16 +18,17 @@ describe ('room validator test' , ()=>{
   const next = jest.fn();
 
   it ('should fail to validate a room' , async ()=>{
-
     req.params = {};
     req.params = {
         id:'fc435680-e47c-4942-aadc-da1cb75edbc3',
       };
+      return await roomValidator(req, res, next).then(()=>{
+        setTimeout(()=>{
+         expect(next).toHaveBeenCalled();
+        },1000)
+      })
+  
+ 
+});
 
-    return await roomValidator(req, res, next)
-    .then(() => {
-
-      expect (next).not.toHaveBeenCalled ();
-    });
-  });
 });
