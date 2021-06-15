@@ -7,7 +7,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 module.exports= async (req,res,next)=>{
   let token = req.cookies['session-token'];
-  console.log ('inside middleware' , token);
+  // console.log ('inside middleware' , token);
   let user = {};
   async function verify(){
     const ticket = await client.verifyIdToken({
@@ -19,15 +19,15 @@ module.exports= async (req,res,next)=>{
     const payload = ticket.getPayload();
     user.name= payload.name;
     user.email= payload.email;
-    user.picture=payload.picture;
+    // user.picture=payload.picture;
     const username = payload.email;
     const password = '1111';
     let obj = {
       username : username,
       password : password,
     };
+    console.log ('paylaod from middlware' , payload)
     try { // news 
-      console.log ('inside middleware3');
 
       let user = new UserModel(obj); //news
       const userRecord = await user.save(); //news
@@ -39,8 +39,9 @@ module.exports= async (req,res,next)=>{
   verify().then(()=>{
     req.user=user;
     next();
+    
   })
     .catch(error=>{
-      res.redirect('/login');
+      console.error (error);
     });
 };

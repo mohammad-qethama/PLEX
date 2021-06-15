@@ -86,16 +86,27 @@ router.post('/login', (req, res) => {
   }
   verify()
     .then(() => {
-      res.cookie('session-token', token).redirect('/profile');
+      res.cookie('session-token', token).redirect ('/profile');
+      // res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
+      
     })
     .catch(console.error);
-});
-router.get('/profile', googleAuth, (req, res) => {
-  let user = req.user;
+  });
+  router.get('/profile', googleAuth, (req, res) => {
+    let user = req.user;
+    // console.log ('this is the paylaod',req.user)
   // console.log(req.cookies['token']);
+       
+
   res.end(); // new
   // res.send(user);
 });
+
+// router.get ('/redirect' , (req , res)=>{
+//   res.sendFile('home.html', { root: path.join(__dirname, '../public') })
+// })
+
+
 router.get('/logout', (req, res) => {
   res.clearCookie('session-token'); // new
   res.clearCookie('token'); // new
@@ -103,8 +114,7 @@ router.get('/logout', (req, res) => {
 });
 // facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res.cookie('session-token', req.token).redirect();
-  // res.cookie('session-token',req.token).json({ token: req.token, user: req.user });
+  res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
   // res.json({ token: req.token, user: req.user });
 });
 //api
@@ -118,7 +128,7 @@ async function creatEventHandler(req, res) {
     let record = await dataManager.create(obj);
     res.status(201).json(record);
   } catch (e) {
-    return console.log(e);
+    console.error (e);
   }
 }
 async function getAllEventHandler(req, res) {
