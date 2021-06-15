@@ -17,7 +17,7 @@ const config = {
     },
   ],
 };
-
+const cookies = getCookie();
 const socket = io.connect(window.location.origin);
 const video = document.querySelector('video');
 const enableAudioButton = document.querySelector('#enable-audio');
@@ -25,7 +25,7 @@ const disableAudioButton = document.querySelector('#disable-audio');
 
 enableAudioButton.addEventListener('click', enableAudio);
 disableAudioButton.addEventListener('click', disableAudio);
-socket.emit('join-room', actualRoomId);
+socket.emit('join-room', { roomId: actualRoomId, cookies: cookies });
 socket.on('offer', (id, description) => {
   peerConnection = new RTCPeerConnection(config);
   peerConnection
