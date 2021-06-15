@@ -34,7 +34,7 @@ router.post('/signup', async (req, res, next) => {
       user: userRecord,
       token: userRecord.token,
     };
-    res.status(304).redirect('/signin.html');
+    res.redirect('/signin.html');
   } catch (error) {
     next(error.message);
   }
