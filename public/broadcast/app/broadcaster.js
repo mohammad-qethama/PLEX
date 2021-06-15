@@ -5,6 +5,7 @@ const onlineUsers = document.getElementById('users');
 const peerConnections = {};
 const online = document.getElementById('online');
 let users = [];
+const cookies = getCookie();
 const config = {
   iceServers: [
     {
@@ -22,7 +23,7 @@ const config = {
 console.log(window.location.origin);
 const socket = io.connect(window.location.origin);
 
-socket.emit('join-room', actualRoomId);
+socket.emit('join-room', { roomId: actualRoomId, cookies: cookies });
 socket.on('answer', (id, description) => {
   console.log({ description });
   peerConnections[id].setRemoteDescription(description);
@@ -158,4 +159,14 @@ function remove(event) {
   event.preventDefault();
   console.log(event.target.value);
   socket.emit('remove-him', event.target.value);
+}
+function getCookie() {
+  var arrayb = document.cookie.split(';');
+  console.log('from get cookies:', arrayb);
+  for (const item of arrayb) {
+    if (item.startsWith('username=')) {
+      console.log(item.substr(9));
+      return item.substr(9);
+    }
+  }
 }

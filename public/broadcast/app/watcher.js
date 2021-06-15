@@ -17,7 +17,7 @@ const config = {
     },
   ],
 };
-
+const cookies = getCookie();
 const socket = io.connect(window.location.origin);
 const video = document.querySelector('video');
 const enableAudioButton = document.querySelector('#enable-audio');
@@ -25,7 +25,7 @@ const disableAudioButton = document.querySelector('#disable-audio');
 
 enableAudioButton.addEventListener('click', enableAudio);
 disableAudioButton.addEventListener('click', disableAudio);
-socket.emit('join-room', actualRoomId);
+socket.emit('join-room', { roomId: actualRoomId, cookies: cookies });
 socket.on('offer', (id, description) => {
   peerConnection = new RTCPeerConnection(config);
   peerConnection
@@ -77,10 +77,18 @@ function disableAudio() {
   video.muted = true;
 }
 function getCookie() {
-  var arrayb = document.cookie.split(';');
+  console.log(document.cookie);
+  var arrayb = document.cookie.split('; ');
+  // console.log('from get cookies:', arrayb);
   for (const item of arrayb) {
     if (item.startsWith('username=')) {
+      console.log(item);
       return item.substr(9);
     }
+    // if (item.startsWith(' username=')) {
+    //   console.log(item.substr(10));
+
+    //   return item.substr(10);
+    // }
   }
 }
