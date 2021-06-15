@@ -51,7 +51,6 @@ io.on('connection', socket => {
     // socket.broadcast.to(roomId).emit('user-connected', userId);
   });
 
-  socket.emit('test2');
   //chat
   socket.on('newUser', payload => {
     users[socket.id] = payload;
