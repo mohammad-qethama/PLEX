@@ -19,7 +19,7 @@ describe('room validator test', () => {
   it('should fail to validate a room', async () => {
     req.params = {};
     req.params = {
-      id: 'fc435680-e47c-4942-aadc-da1cb75ed',
+      id: 'fc435680-e47c-4942-aadc-da1cb',
     };
 
     return await roomValidator(req, res, next).then(() => {

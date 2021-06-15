@@ -40,7 +40,7 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 let name; //
-router.post('/signin', (req, res, next) => {
+router.post('/signin', basicAuth, (req, res, next) => {
   const userObject = {
     user: req.user,
     token: req.user.token,
