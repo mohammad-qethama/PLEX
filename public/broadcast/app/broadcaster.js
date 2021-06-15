@@ -161,7 +161,7 @@ function remove(event) {
   socket.emit('remove-him', event.target.value);
 }
 function getCookie() {
-  var arrayb = document.cookie.split(';');
+  var arrayb = document.cookie.split('; ');
   console.log('from get cookies:', arrayb);
   for (const item of arrayb) {
     if (item.startsWith('username=')) {
