@@ -17,13 +17,15 @@ const config = {
     },
   ],
 };
-
+const cookies = getCookie();
 const socket = io.connect(window.location.origin);
 const video = document.querySelector('video');
 const enableAudioButton = document.querySelector('#enable-audio');
+const disableAudioButton = document.querySelector('#disable-audio');
 
 enableAudioButton.addEventListener('click', enableAudio);
-socket.emit('join-room', actualRoomId);
+disableAudioButton.addEventListener('click', disableAudio);
+socket.emit('join-room', { roomId: actualRoomId, cookies: cookies });
 socket.on('offer', (id, description) => {
   peerConnection = new RTCPeerConnection(config);
   peerConnection
@@ -50,8 +52,10 @@ socket.on('candidate', (id, candidate) => {
 });
 
 socket.on('connect', () => {
+  let username = getCookie();
   console.log(actualRoomId);
   socket.emit('watcher', actualRoomId);
+  socket.emit('add-connected', { username, actualRoomId });
 });
 
 socket.on('broadcaster', roomId => {
@@ -67,4 +71,24 @@ window.onunload = window.onbeforeunload = () => {
 function enableAudio() {
   console.log('Enabling audio');
   video.muted = false;
+}
+function disableAudio() {
+  console.log('Enabling audio');
+  video.muted = true;
+}
+function getCookie() {
+  console.log(document.cookie);
+  var arrayb = document.cookie.split('; ');
+  // console.log('from get cookies:', arrayb);
+  for (const item of arrayb) {
+    if (item.startsWith('username=')) {
+      console.log(item);
+      return item.substr(9);
+    }
+    // if (item.startsWith(' username=')) {
+    //   console.log(item.substr(10));
+
+    //   return item.substr(10);
+    // }
+  }
 }

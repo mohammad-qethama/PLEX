@@ -1,7 +1,11 @@
 'use strict';
 const roomIdFromUrl = window.location.href;
 const actualRoomId = roomIdFromUrl.split('/')[3];
+const onlineUsers = document.getElementById('users');
 const peerConnections = {};
+const online = document.getElementById('online');
+let users = [];
+const cookies = getCookie();
 const config = {
   iceServers: [
     {
@@ -19,12 +23,20 @@ const config = {
 console.log(window.location.origin);
 const socket = io.connect(window.location.origin);
 
-socket.emit('join-room', actualRoomId);
+socket.emit('join-room', { roomId: actualRoomId, cookies: cookies });
 socket.on('answer', (id, description) => {
   console.log({ description });
   peerConnections[id].setRemoteDescription(description);
 });
-
+socket.on('users', userPayload => {
+  // console.log(users);
+  users.push(userPayload);
+  renderUsers(users);
+});
+socket.on('remove-user', username => {
+  users = users.filter(item => item.username !== username);
+  renderUsers(users);
+});
 socket.on('watcher', id => {
   const peerConnection = new RTCPeerConnection(config);
   peerConnections[id] = peerConnection;
@@ -123,4 +135,38 @@ function gotStream(stream) {
 
 function handleError(error) {
   console.error('Error: ', error);
+}
+const renderUsers = users => {
+  let div = document.createElement('div');
+
+  onlineUsers.innerHTML = '';
+
+  users.forEach(user => {
+    let userDiv = document.createElement('div');
+    let click = document.createElement('button');
+    click.setAttribute('class', 'ban');
+    click.setAttribute('value', `${user.soketId}`);
+    click.addEventListener('click', remove);
+    click.innerHTML = 'Ban';
+    userDiv.innerHTML = user.username;
+    userDiv.appendChild(click);
+    div.appendChild(userDiv);
+  });
+  online.innerHTML = users.length;
+  onlineUsers.append(div);
+};
+function remove(event) {
+  event.preventDefault();
+  console.log(event.target.value);
+  socket.emit('remove-him', event.target.value);
+}
+function getCookie() {
+  var arrayb = document.cookie.split(';');
+  console.log('from get cookies:', arrayb);
+  for (const item of arrayb) {
+    if (item.startsWith('username=')) {
+      console.log(item.substr(9));
+      return item.substr(9);
+    }
+  }
 }
