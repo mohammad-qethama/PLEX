@@ -40,7 +40,7 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 let name; //
-router.post('/signin', basicAuth, (req, res, next) => {
+router.post('/signin', (req, res, next) => {
   const userObject = {
     user: req.user,
     token: req.user.token,
@@ -84,17 +84,15 @@ router.post('/login', (req, res) => {
   }
   verify()
     .then(() => {
-      res.cookie('session-token', token).redirect ('/profile');
+      res.cookie('session-token', token).redirect('/profile');
       // res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
-      
     })
     .catch(console.error);
-  });
-  router.get('/profile', googleAuth, (req, res) => {
-    let user = req.user;
-    // console.log ('this is the paylaod',req.user)
+});
+router.get('/profile', googleAuth, (req, res) => {
+  let user = req.user;
+  // console.log ('this is the paylaod',req.user)
   // console.log(req.cookies['token']);
-       
 
   res.end(); // new
   // res.send(user);
@@ -103,7 +101,6 @@ router.post('/login', (req, res) => {
 // router.get ('/redirect' , (req , res)=>{
 //   res.sendFile('home.html', { root: path.join(__dirname, '../public') })
 // })
-
 
 router.get('/logout', (req, res) => {
   res.clearCookie('session-token'); // new
@@ -114,7 +111,9 @@ router.get('/logout', (req, res) => {
 });
 // facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
+  res
+    .cookie('session-token', req.token)
+    .sendFile('home.html', { root: path.join(__dirname, '../public') });
   // res.json({ token: req.token, user: req.user });
 });
 //api
@@ -128,7 +127,7 @@ async function creatEventHandler(req, res) {
     let record = await dataManager.create(obj);
     res.status(201).json(record);
   } catch (e) {
-    console.error (e);
+    console.error(e);
   }
 }
 async function getAllEventHandler(req, res) {
@@ -155,7 +154,7 @@ function roomHandler(req, res) {
   //   root: path.join(__dirname, '../public/broadcast'),
   // });
   // res.render('broadcaster.html');
-  console.log ('request params' , req.params)
+  console.log('request params', req.params);
   req.isOwner
     ? res.sendFile('broadcaster.html', {
         root: path.join(__dirname, '../public/broadcast'),
