@@ -4,9 +4,8 @@ const router = require('./Router');
 const notFound = require('./errors/404');
 const internalError = require('./errors/500');
 
-
 let broadcaster = {};
-
+// let usersConnected = [];
 // requiring express to start the server
 const express = require('express');
 const app = express();
@@ -17,7 +16,7 @@ const morgan = require('morgan');
 const multer = require('multer');
 const multParse = multer();
 
-const moment = require('moment');//chat
+const moment = require('moment'); //chat
 
 const cookieParser = require('cookie-parser'); //new
 
@@ -32,7 +31,6 @@ app.use(multParse.none());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 app.use(express.static('./public')); //new
 
 app.use(cookieParser()); //new
@@ -44,19 +42,18 @@ app.use(router);
 //catchalls
 app.use('*', notFound);
 app.use(internalError);
-const users = {};//chat
+const users = {}; //chat
 // const {username}=require('./Router');//chat
 
 io.on('connection', socket => {
   socket.on('join-room', roomId => {
     socket.join(roomId);
-    socket.broadcast.to(roomId).emit('user-connected', userId);
+    // socket.broadcast.to(roomId).emit('user-connected', userId);
   });
 
-  socket.emit('test2');
   //chat
-  socket.on('newUser',(payload)=>{
-    users[socket.id]=payload;
+  socket.on('newUser', payload => {
+    users[socket.id] = payload;
     // console.log('last check ya rab',payload);
     socket.broadcast.emit('chat-user-connected', {
       name: payload,
@@ -64,11 +61,11 @@ io.on('connection', socket => {
     });
   });
   //chat
-  socket.on('message',(payload)=>{
+  socket.on('message', payload => {
     // console.log('chat user connected',payload);
-    socket.broadcast.emit('chat-message',payload);
-  });//chat
-  
+    socket.broadcast.emit('chat-message', payload);
+  }); //chat
+
   socket.on('broadcaster', roomId => {
     console.log(roomId);
 
@@ -95,11 +92,36 @@ io.on('connection', socket => {
     console.log('candidate ');
     socket.to(id).emit('candidate', socket.id, message);
   });
-  socket.on('disconnect', (roomId, userId) => {
-    socket.broadcast.to(roomId).emit('user-disconnected', userId);
+  socket.on('disconnect', () => {
+    if (socket.username) {
+      socket
+        .to(socket.username.roomId)
+        .emit('remove-user', socket.username.username);
+      socket.to(socket.username.roomId).emit('disconnectPeer', socket.id);
+    }
   });
   socket.on('chat', () => {
     console.log('chat is delivered');
+  });
+  socket.on('remove-him', socketId => {
+    // console.log(io.sockets.sockets.get(socketId));
+    if (io.sockets.sockets.get(socketId)) {
+      console.log('IAM INNNNNNNNNNNNNNNNNNNNNN');
+      io.sockets.sockets.get(socketId).disconnect();
+    }
+  });
+  socket.on('add-connected', payload => {
+    console.log(payload);
+    socket.username = {
+      username: payload.username,
+      roomId: payload.actualRoomId,
+    };
+    console.log(socket.username);
+    // usersConnected.push(payload.username);
+    // let usersList = [...new Set(usersConnected)];
+    socket
+      .to(payload.actualRoomId)
+      .emit('users', { username: payload.username, soketId: socket.id });
   });
 });
 module.exports = {

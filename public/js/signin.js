@@ -27,7 +27,7 @@ $('#formSubmit').submit(function (e) {
     console.log(userObject);
     let token = userObject.token;
     document.cookie = `token=${token}`;
-    // if (response.ok) window.location = 'home.html';
-    // else throw new Error('Bad HTTP request ');
+    if (response.ok) window.location = 'home.html';
+    else throw new Error('Bad HTTP request ');
   });
 });
