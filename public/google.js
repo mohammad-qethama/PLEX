@@ -11,11 +11,10 @@ function onSignIn(googleUser) {
   xhr.open('POST', '/login');
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onload = function () {
-    // console.log('Signed in as: ' + xhr.responseText);
-    if (xhr.responseText === 'success') {
-      // signOut();
-      location.assign('/profile');
-    }
+    
+      
+      location.assign('/home.html');
+    
   };
   xhr.send(JSON.stringify({ token: id_token }));
 }

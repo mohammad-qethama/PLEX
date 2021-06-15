@@ -5,6 +5,24 @@ const {app}=require('../server');
 const {expect}= require('@jest/globals');
 const request= supergoose(app);
 let id;
+
+let consoleSpy;
+// const req = { method: 'get', path: 'test' };
+// const res = {};
+// const next = jest.fn();
+beforeEach(() => {
+  consoleSpy = jest.spyOn(console, 'log');//.mockImplementation();
+});
+afterEach(() => {
+  consoleSpy.mockRestore();
+});
+
+
+
+
+
+
+
 describe('api test',()=>{
   it('should get All Event',async()=>{
     const res = await request.get('/getEvents');
@@ -23,6 +41,22 @@ describe('api test',()=>{
     expect(res.body.city).toEqual('amman');
     id=res.body._id;
   });
+
+  // it('should not create new event',async ()=>{
+  //   const res = await request.post('/createEvent')
+  //   jest.setTimeout(()=>{
+  //     res.send(
+  //       {
+  //         attendance_limit:10,
+  //         city:'amman',
+  
+  //       },
+  //     );
+  //     expect(res.status).toEqual(500);
+            
+  //        },10000)
+  //      });
+
   it('should get event by id ',async()=>{
     const res= await request.get(`/getEvents/${id}`);
     expect(res.status).toEqual(200);

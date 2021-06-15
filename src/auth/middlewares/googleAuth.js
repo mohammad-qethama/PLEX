@@ -7,7 +7,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 module.exports = async (req, res, next) => {
   let token = req.cookies['session-token'];
-  console.log('inside middleware', token);
+
   let user = {};
   async function verify() {
     const ticket = await client.verifyIdToken({
@@ -17,15 +17,18 @@ module.exports = async (req, res, next) => {
     console.log('inside middleware2');
 
     const payload = ticket.getPayload();
-    user.name = payload.name;
-    user.email = payload.email;
-    user.picture = payload.picture;
+
+    user.name= payload.name;
+    user.email= payload.email;
+    
+
     const username = payload.email;
     const password = '1111';
     let obj = {
       username: username,
       password: password,
     };
+
     try {
       // news
       console.log('inside middleware3');
@@ -35,6 +38,7 @@ module.exports = async (req, res, next) => {
         res.cookie('username', document.username.split('@')[0]);
       } else {
         let user = new UserModel(obj); //news
+
 
         const userRecord = await user.save(); //news
         res.cookie('token', userRecord.token);
@@ -46,6 +50,7 @@ module.exports = async (req, res, next) => {
       // next(error)
     }
   }
+
 
   verify()
     .then(() => {

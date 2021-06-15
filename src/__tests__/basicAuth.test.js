@@ -4,11 +4,14 @@ const supergoose = require('@code-fellows/supergoose');
 const {app}  = require('../server.js');
 const basic = require('../auth/middlewares/basic.js');
 const request = supergoose(app);
+var faker = require('faker');
 //arrange
 let users;
+let randomName = faker.name.findName();
 beforeAll(()=>{
   users = {
-  username: 'Tamara',
+  // username: 'Tamara',
+  username : randomName,
   password: '12345',
   role:'user',
 }; 
