@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta
+      name="google-signin-client_id"
+      content="772848863323-99gttoe9te13nujv7m3pb79a1e98dvds.apps.googleusercontent.com"
+    />
+  </head>
+
+  <body>
+    <h1>sign in with :</h1>
+<!-- 
+    <button>
+        <a id="login" href=""> Login from Facebook</a>
+    </button> -->
+
+    <a id="login"
+      ><img
+        src="http://evelinka.kerouac.cz/images/fb_button_login.png"
+        style="width: 250px"
+        alt=""
+    /></a>
+
+    <div class="g-signin2" data-onsuccess="onSignIn" style="width: 200px"></div>
+    <a href="/googlelogout" onclick="signOut();">Sign out</a>
+
+    <script src="./google.js"></script>
+
+    <script src="./facebook.js"></script>
+  </body>
+</html>
