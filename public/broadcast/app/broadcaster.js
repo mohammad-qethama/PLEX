@@ -22,7 +22,6 @@ const config = {
     },
   ],
 };
-console.log(window.location.origin);
 
 const socket = io.connect(window.location.origin);
 
@@ -169,16 +168,13 @@ const renderUsers = users => {
 // handling clicking on the ban button from the dom 
 function remove(event) {
   event.preventDefault();
-  console.log(event.target.value);
   socket.emit('remove-him', event.target.value);
 }
 // get the username from the cookies
 function getCookie() {
   var arrayb = document.cookie.split('; ');
-  console.log('from get cookies:', arrayb);
   for (const item of arrayb) {
     if (item.startsWith('username=')) {
-      console.log(item.substr(9));
       return item.substr(9);
     }
   }

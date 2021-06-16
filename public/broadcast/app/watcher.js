@@ -59,13 +59,11 @@ socket.on('candidate', (id, candidate) => {
 
 socket.on('connect', () => {
   let username = getCookie();
-  console.log(actualRoomId);
   socket.emit('watcher', actualRoomId);
   socket.emit('add-connected', { username, actualRoomId });
 });
-// retrive the broadcaster roomID and emit it to the `watcher` listner on the server.js with its own room id//the should be the same roomID
+// retrieved the broadcaster roomID and emit it to the `watcher` listner on the server.js with its own room id//the should be the same roomID
 socket.on('broadcaster', roomId => {
-  console.log(roomId);
   socket.emit('watcher', roomId);
 });
 // close on socket/peer connection on closing/refreshing the window 
@@ -76,30 +74,21 @@ window.onunload = window.onbeforeunload = () => {
 };
 // enable stream audio button event handler
 function enableAudio() {
-  console.log('Enabling audio');
   video.muted = false;
 }
 // disable stream audio button event handler
 
 function disableAudio() {
-  console.log('Enabling audio');
   video.muted = true;
 }
 // get the username from the cookies
 
 function getCookie() {
-  console.log(document.cookie);
   var arrayb = document.cookie.split('; ');
-  // console.log('from get cookies:', arrayb);
   for (const item of arrayb) {
     if (item.startsWith('username=')) {
-      console.log(item);
       return item.substr(9);
     }
-    // if (item.startsWith(' username=')) {
-    //   console.log(item.substr(10));
-
-    //   return item.substr(10);
-    // }
+  
   }
 }
