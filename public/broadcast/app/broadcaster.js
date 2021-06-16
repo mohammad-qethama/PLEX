@@ -1,13 +1,22 @@
 'use strict';
+//getting room id from the url to be send back to server through sockets.
 const roomIdFromUrl = window.location.href;
 const actualRoomId = roomIdFromUrl.split('/')[3];
-// taking the room id from the url 
 
+// taking the room id from the url 
 const onlineUsers = document.getElementById('users');
-const peerConnections = {};
 const online = document.getElementById('online');
+
+// object contains peers id's which is connected to the broadcaster
+const peerConnections = {};
+
+// array contains names of connected users(watchers)
 let users = [];
+
+// calling the fucntion to split out the username cookie from the browser
 const cookies = getCookie();
+
+//setting up params of TURN & STUN servers.
 const config = {
   iceServers: [
     {
@@ -23,12 +32,16 @@ const config = {
   ],
 };
 
+// opening up(connecting) a socket through express server using http
+
 const socket = io.connect(window.location.origin);
 
+// assinging a socket to a room
 socket.emit('join-room', { roomId: actualRoomId, cookies: cookies });
+
 //reciving the answer and establishing (or refusing) with the watcher.js via its RTCPeerConnection 
+
 socket.on('answer', (id, description) => {
-  console.log({ description });
   peerConnections[id].setRemoteDescription(description);
 });
 // read connected users and render them on the dom 

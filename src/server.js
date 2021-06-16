@@ -21,8 +21,7 @@ const multer = require('multer');
 const multParse = multer();
 
 const eventRoutes = require('./routes/events.js');
-const moment = require('moment');//chat
-
+const moment = require('moment'); //chat
 
 const cookieParser = require('cookie-parser'); //new
 
@@ -44,7 +43,7 @@ app.use(cookieParser()); //new
 app.use(express.static(path.join(__dirname, '../public')));
 
 //routes
-app.use('/events',eventRoutes )
+app.use('/events', eventRoutes);
 
 app.use(router);
 //catchalls
@@ -134,7 +133,6 @@ io.on('connection', socket => {
   });
   // sending the watcher answer of its own room broadcaster offer  to that broadcaster 
   socket.on('answer', (id, message) => {
-    console.log('answer ');
     socket.to(id).emit('answer', socket.id, message);
   });
   // sending to watcher the SDP of its room broadcaster along with its socket.id

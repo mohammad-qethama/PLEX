@@ -7,11 +7,14 @@ module.exports = async (req, res, next) => {
     res.status(401).send('Authorization header is not provided');
     return;
   }
+  //splitting the header and remove 'Basic' from it
   let basic = req.headers.authorization.split(' ').pop();
 
+  //decode the username and the password
   let [user, password] = base64.decode(basic).split(':');
 
   try {
+    //checking and comparing if the username and the password exsist in the schema
     req.user = await UserModel.basicAuth(user, password);
     next();
   } catch (error) {
