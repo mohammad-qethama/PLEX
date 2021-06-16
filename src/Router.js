@@ -9,7 +9,6 @@ const checkOwner = require('./auth/middlewares/checkOwner');
 require('dotenv').config(); //new
 const path = require('path'); //new
 const googleAuth = require('../src/auth/middlewares/googleAuth'); //new
-const facebookOAuth = require('../src/auth/middlewares/facebookAuth'); //new facebook
 //googleOauth
 const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -108,11 +107,7 @@ router.get('/logout', (req, res) => {
   // res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
   res.redirect('/signin.html');
 });
-// facebook
-router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
-  // res.json({ token: req.token, user: req.user });
-});
+
 
 router.get('/', rootHandler);
 
