@@ -6,6 +6,7 @@ module.exports = async (req, res, next) => {
     let user = await userModel.bearerAuth(token);
     req.user = user;
     console.log('inside islogged', token);
+    console.log('req.query:', req.query);
     token ? next() : res.redirect('/signin.html');
   } catch (error) {
     res.status(403).send('Acess Denied');

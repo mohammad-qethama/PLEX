@@ -19,6 +19,8 @@ const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
 const roomValidator = require('./auth/middlewares/roomValidiator');
 const { model } = require('mongoose');
+let base64 = require('base-64');
+const privatRoomValidator = require('./auth/middlewares/privateRoomValidator.js');
 
 router.use(express.static(path.join(__dirname, '../public/broadcast')));
 
@@ -38,7 +40,7 @@ router.post('/signup', async (req, res, next) => {
 let name; //
 router.post('/signin', basicAuth, (req, res, next) => {
   const userObject = {
-    user: req.user,
+    user: req.user.username,
     token: req.user.token,
   };
   res.cookie('username', req.user.username); //chat
@@ -80,17 +82,15 @@ router.post('/login', (req, res) => {
   }
   verify()
     .then(() => {
-      res.cookie('session-token', token).redirect ('/profile');
+      res.cookie('session-token', token).redirect('/profile');
       // res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
-      
     })
     .catch(console.error);
-  });
-  router.get('/profile', googleAuth, (req, res) => {
-    let user = req.user;
-    // console.log ('this is the paylaod',req.user)
+});
+router.get('/profile', googleAuth, (req, res) => {
+  let user = req.user;
+  // console.log ('this is the paylaod',req.user)
   // console.log(req.cookies['token']);
-       
 
   res.end(); // new
   // res.send(user);
@@ -99,7 +99,6 @@ router.post('/login', (req, res) => {
 // router.get ('/redirect' , (req , res)=>{
 //   res.sendFile('home.html', { root: path.join(__dirname, '../public') })
 // })
-
 
 router.get('/logout', (req, res) => {
   res.clearCookie('session-token'); // new
@@ -110,7 +109,9 @@ router.get('/logout', (req, res) => {
 });
 // facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
+  res
+    .cookie('session-token', req.token)
+    .sendFile('home.html', { root: path.join(__dirname, '../public') });
   // res.json({ token: req.token, user: req.user });
 });
 
@@ -118,6 +119,7 @@ router.get('/', rootHandler);
 
 router.post('/ctreatRoom', isLogged, createRoom);
 router.get('/:id', isLogged, roomValidator, checkOwner, roomHandler);
+router.get('/p/:id', isLogged, privatRoomValidator, checkOwner, roomHandler);
 
 function rootHandler(req, res) {
   res.send('root is working');
@@ -128,7 +130,7 @@ function roomHandler(req, res) {
   //   root: path.join(__dirname, '../public/broadcast'),
   // });
   // res.render('broadcaster.html');
-  console.log ('request params' , req.params)
+  console.log('request params', req.params);
   req.isOwner
     ? res.sendFile('broadcaster.html', {
         root: path.join(__dirname, '../public/broadcast'),
@@ -139,10 +141,28 @@ function roomHandler(req, res) {
 }
 async function createRoom(req, res) {
   let roomId = uuid();
-  console.log(roomId);
-  let room = new Room({ roomId: roomId, owner: req.user.username });
-  const record = await room.save();
-  console.log('record.roomId:', record.roomId, record.owner);
-  res.redirect(`/${record.roomId}`);
+  if (req.body.category === 'private') {
+    let room = new Room({
+      roomId: roomId,
+      owner: req.user.username,
+      category: req.body.category,
+      password: req.body.password,
+    });
+    const record = await room.save();
+    console.log('req.body.password:', req.body.password);
+    let encoded = base64.encode(req.body.password);
+    console.log(`/p/${record.roomId}?p=${encoded}`);
+    res.redirect(`/p/${record.roomId}?p=${encoded}`);
+  } else {
+    let room = new Room({
+      roomId: roomId,
+      owner: req.user.username,
+      category: req.body.category,
+    });
+    const record = await room.save();
+    res.redirect(`/${record.roomId}`);
+  }
+
+  // console.log('record.roomId:', record.roomId, record.owner);
 }
 module.exports = router;
