@@ -6,10 +6,12 @@ module.exports = async (req, res, next) => {
     next('Not logged in user');
   } else {
     try {
+      //taking the token from the header and remove 'Bearer'
       let token = req.headers.authorization.split(' ').pop();
+
+      //checking if the token related to the user
       let user = await userModel.bearerAuth(token);
       if (user) {
-        // console.log(user);
         req.user = user;
         next();
       } else {
