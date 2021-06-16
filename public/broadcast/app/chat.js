@@ -9,8 +9,6 @@ let time = today.getHours() + ':' + today.getMinutes();
 let room = window.location.href.split('/')[3];
 
 socket.on('old_massage', payload => {
-  console.log('dd');
-  console.log(payload.message);
   if (payload.message === 0) {
     appendMessage(`You joined 🕜 ${time}`);
     socket.emit('new-user', { name: name, roomId: room });

@@ -9,7 +9,7 @@ let base64 = require('base-64');
 module.exports = async (req, res, next) => {
   try {
     let id = req.params.id;
-    console.log(req.params);
+
     let decoded = base64.decode(req.query.p);
     let password = decoded;
     let document = await Room.basicAuth(id, password);
