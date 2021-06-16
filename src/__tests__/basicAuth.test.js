@@ -5,6 +5,7 @@ const {app}  = require('../server.js');
 const basic = require('../auth/middlewares/basic.js');
 const request = supergoose(app);
 var faker = require('faker');
+process.env.SECRET = 'toes';
 //arrange
 let users;
 let randomName = faker.name.findName();
@@ -43,6 +44,7 @@ describe('Basic Auth testing', () => {
     };
     const response = await request.post('/signin').auth(credentials.username,credentials.password);
     expect(response.status).toBe(403);
+    
   }); 
   it('Should return 401 status without authorization headers', async() => {
     let credentials = {

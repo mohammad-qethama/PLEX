@@ -69,6 +69,15 @@ describe ('user route with bearer',()=>{
       .set('Authorization', `Bearer foobar`);
     expect(bearerResponse.status).toBe(403);
   });
+  it ('should pass return the user' , async ()=>{
+    const bearerResponse = await mockRequest
+     setTimeout(()=>{
+      bearerResponse.get('/secret')
+      .set('Authorization', `Bearer ${token}`);
+    expect(bearerResponse.status).toBe(200);
+     },1000) 
+  });
+
   it('logs in a user with a proper token', () => {
     const user = { username: 'admin' };
     const token = jwt.sign(user, process.env.SECRET);

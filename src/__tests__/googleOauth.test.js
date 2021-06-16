@@ -19,7 +19,6 @@ describe('Google Oauth Middleware', () => {
         .then(() => {
           expect(next).not.toHaveBeenCalled();
           expect(res.payload).toBeNull;
-          // expect(res.status).toBe(302);
         });
     });
   });

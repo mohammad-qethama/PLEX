@@ -21,8 +21,6 @@ router.delete('/:id',isLogged,acl('delete'),deleteHandler);
      } catch (error) {
          next(error);         
      }
-    
-
  }
 
  async function getHandler(req,res,next){

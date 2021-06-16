@@ -9,12 +9,12 @@ const checkOwner = require('./auth/middlewares/checkOwner');
 require('dotenv').config(); //new
 const path = require('path'); //new
 const googleAuth = require('../src/auth/middlewares/googleAuth'); //new
-const facebookOAuth = require('../src/auth/middlewares/facebookAuth'); //new facebook
+
 //googleOauth
 const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
-//new
+
 const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
 const roomValidator = require('./auth/middlewares/roomValidiator');
@@ -54,19 +54,11 @@ router.get('/user', isLogged, (req, res) => {
   };
   res.status(200).json({ user: user });
 });
-router.get('/protected', googleAuth, (req, res) => {
-  //googleAuth
-  res.send('this is protected route');
-});
+
 router.get('/secret', bearer, (req, res) => {
-  // console.log('hi');
-  //  res.send('hi');
+
   res.json(req.user);
 }); //test
-
-router.get('/login', (req, res) => {
-  res.sendFile('auth.html', { root: path.join(__dirname, '../public') });
-});
 
 router.post('/login', (req, res) => {
   let token = req.body.token;
@@ -90,15 +82,9 @@ router.post('/login', (req, res) => {
     let user = req.user;
     // console.log ('this is the paylaod',req.user)
   // console.log(req.cookies['token']);
-       
-
   res.end(); // new
   // res.send(user);
 });
-
-// router.get ('/redirect' , (req , res)=>{
-//   res.sendFile('home.html', { root: path.join(__dirname, '../public') })
-// })
 
 
 router.get('/logout', (req, res) => {
@@ -108,11 +94,7 @@ router.get('/logout', (req, res) => {
   // res.sendFile('signin.html', { root: path.join(__dirname, '../public') });
   res.redirect('/signin.html');
 });
-// facebook
-router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
-  // res.json({ token: req.token, user: req.user });
-});
+
 
 router.get('/', rootHandler);
 
@@ -120,7 +102,8 @@ router.post('/ctreatRoom', isLogged, createRoom);
 router.get('/:id', isLogged, roomValidator, checkOwner, roomHandler);
 
 function rootHandler(req, res) {
-  res.send('root is working');
+  res.status(200)
+  // res.send('root is working');
   // res.sendFile('index.html', { root: path.join(__dirname, '../public') });;
 }
 function roomHandler(req, res) {
