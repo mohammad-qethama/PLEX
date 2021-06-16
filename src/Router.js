@@ -15,10 +15,6 @@ const { OAuth2Client } = require('google-auth-library');
 const CLIENT_ID = process.env.CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 //new
-const DataCollection = require('../src/auth/models/dataCollection'); //api
-const EventSchema = require('../src/auth/models/Events'); //api
-const fs = require('fs'); //api
-const models = new Map(); //api
 const uuid = require('uuid').v4;
 const Room = require('./auth/models/Room');
 const roomValidator = require('./auth/middlewares/roomValidiator');
@@ -117,30 +113,7 @@ router.get('/facebooklogin', facebookOAuth, (req, res) => {
   res.cookie('session-token', req.token).sendFile('home.html', { root: path.join(__dirname, '../public') });;
   // res.json({ token: req.token, user: req.user });
 });
-//api
-router.post('/createEvent', creatEventHandler);
-router.get('/getEvents', getAllEventHandler);
-router.get('/getEvents/:id', getEventHandler);
-const dataManager = new DataCollection(EventSchema);
-async function creatEventHandler(req, res) {
-  try {
-    let obj = req.body;
-    let record = await dataManager.create(obj);
-    res.status(201).json(record);
-  } catch (e) {
-    console.error (e);
-  }
-}
-async function getAllEventHandler(req, res) {
-  let allRecords = await dataManager.get();
-  res.status(200).json(allRecords);
-}
-async function getEventHandler(req, res) {
-  const id = req.params.id;
-  let record = await dataManager.get(id);
-  res.status(200).json(record);
-}
-// /api
+
 router.get('/', rootHandler);
 
 router.post('/ctreatRoom', isLogged, createRoom);
