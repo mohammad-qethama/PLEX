@@ -110,7 +110,8 @@ io.on('connection', socket => {
     // console.log('chat user connected',payload);
     socket.broadcast.emit('chat-message', payload);
   }); //chat
-
+  
+  // retrieve the broadcaster roomID saving it and  and emit it to the watcher.js on the same room listener `broadcaster`
   socket.on('broadcaster', roomId => {
     console.log(roomId);
 
@@ -120,19 +121,23 @@ io.on('connection', socket => {
 
     socket.broadcast.to(roomId.roomId).emit('broadcaster', roomId);
   });
+  // sending watcher socket id to its room(socket.io room) broadcaster
   socket.on('watcher', roomId => {
     console.log('watcher ');
 
     socket.to(broadcaster[roomId]).emit('watcher', socket.id);
   });
+  // sending the peer-to-peer offer from broadcaster to the watcher
   socket.on('offer', (id, message) => {
     console.log('offer ');
     socket.to(id).emit('offer', socket.id, message);
   });
+  // sending the watcher answer of its own room broadcaster offer  to that broadcaster 
   socket.on('answer', (id, message) => {
     console.log('answer ');
     socket.to(id).emit('answer', socket.id, message);
   });
+  // sending to watcher the SDP of its room broadcaster along with its socket.id
   socket.on('candidate', (id, message) => {
     console.log('candidate ');
     socket.to(id).emit('candidate', socket.id, message);
