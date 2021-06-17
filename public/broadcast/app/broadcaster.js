@@ -24,9 +24,9 @@ const config = {
     },
     {
       urls: 'turn:us-turn8.xirsys.com:3478?transport=tcp',
-      credential: '6d9541b6-ce8f-11eb-9636-0242ac140004',
+      credential: '92f1e7da-cf33-11eb-b4da-0242ac140004',
       username:
-        'qkLf5kwAmafNw6BSRFvxfuyf7aAO2rt_agCKXKRd-wYc1kLcIB0Ol5A6GAOp1BeQAAAAAGDJ1WFpYnJhaGltYmFuYXQ=',
+        'rBsN8vEH9R6S1z7ZWvq-UiP5dTxxoCzmcpN3F_NDpmuL8XjcManv4pawQPQfeysQAAAAAGDK6MZpYnJhaGltYmFuYXQ=',
       credentialType: 'password',
     },
   ],
