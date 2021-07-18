@@ -47,7 +47,9 @@ router.post('/signup', async (req, res, next) => {
       token: userRecord.token,
     };
     //redirecing the user to the signin page
-    res.redirect('/signin.html');
+    // res.redirect('/signin.html');
+    res.json(output);
+
   } catch (error) {
     next(error.message);
   }
@@ -76,10 +78,10 @@ router.get('/logout', (req, res) => {
 });
 // facebook
 router.get('/facebooklogin', facebookOAuth, (req, res) => {
-  res
-    .cookie('session-token', req.token)
-    .sendFile('home.html', { root: path.join(__dirname, '../public') });
-  // res.json({ token: req.token, user: req.user });
+ 
+    // .cookie('session-token', req.token)
+    // .sendFile('home.html', { root: path.join(__dirname, '../public') });
+  res.json({ token: req.token, user: req.user });
 });
 
 router.get('/', rootHandler);
@@ -98,12 +100,15 @@ function rootHandler(req, res) {
  */
 function roomHandler(req, res) {
   req.isOwner
-    ? res.sendFile('broadcaster.html', {
-        root: path.join(__dirname, '../public/broadcast'),
-      })
-    : res.sendFile('watcher.html', {
-        root: path.join(__dirname, '../public/broadcast'),
-      });
+    // ? res.sendFile('broadcaster.html', {
+    //     root: path.join(__dirname, '../public/broadcast'),
+    //   })
+    // : res.sendFile('watcher.html', {
+    //     root: path.join(__dirname, '../public/broadcast'),
+    //   });
+    res.json(
+      {OwnerFlag:  req.isOwner
+    });
 }
 /**
  * this function generate a unique id for the room save it to the db and redirect the user to the event page
@@ -122,9 +127,10 @@ async function createRoom(req, res, next) {
         password: req.body.password,
       });
       const record = await room.save();
+      console.log(record);
 
       let encoded = base64.encode(req.body.password);
-      res.redirect(`/p/${record.roomId}?p=${encoded}`);
+      res.json({record,encoded});
     } else {
       let room = new Room({
         roomId: roomId,
@@ -132,7 +138,7 @@ async function createRoom(req, res, next) {
         category: req.body.category,
       });
       const record = await room.save();
-      res.redirect(`/${record.roomId}`);
+      res.json({record});
     }
   } catch (error) {
     next(error);

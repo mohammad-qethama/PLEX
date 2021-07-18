@@ -167,7 +167,7 @@ io.on('connection', socket => {
   socket.on('remove-him', socketId => {
     // console.log(io.sockets.sockets.get(socketId));
     if (io.sockets.sockets.get(socketId)) {
-      console.log('IAM INNNNNNNNNNNNNNNNNNNNNN');
+      // console.log('IAM INNNNNNNNNNNNNNNNNNNNNN');
       io.sockets.sockets.get(socketId).disconnect();
     }
   });
@@ -177,7 +177,7 @@ io.on('connection', socket => {
       username: payload.username,
       roomId: payload.actualRoomId,
     };
-    console.log(socket.username);
+    // console.log(socket.username);
 
     socket
       .to(payload.actualRoomId)
