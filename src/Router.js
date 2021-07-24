@@ -86,9 +86,9 @@ router.get('/facebooklogin', facebookOAuth, (req, res) => {
 
 router.get('/', rootHandler);
 
-router.post('/ctreatRoom', isLogged, createRoom);
-router.get('/:id', isLogged, roomValidator, checkOwner, roomHandler);
-router.get('/p/:id', isLogged, privatRoomValidator, checkOwner, roomHandler);
+router.post('/ctreatRoom', bearer, createRoom);
+router.get('/:id', bearer, roomValidator, checkOwner, roomHandler);
+router.get('/p/:id', bearer, privatRoomValidator, checkOwner, roomHandler);
 
 router.post('/googleLogin', (req, res,next) => {
 
@@ -120,7 +120,7 @@ function rootHandler(req, res) {
  * @param {*} res
  */
 function roomHandler(req, res) {
-  req.isOwner
+  // req.isOwner
     // ? res.sendFile('broadcaster.html', {
     //     root: path.join(__dirname, '../public/broadcast'),
     //   })
