@@ -54,6 +54,7 @@ app.use(internalError);
 
 io.on('connection', socket => {
   socket.on('join-room', payload => {
+    console.log(payload.roomId);
     socket.join(payload.roomId);
     roomsIds[socket.id] = payload.roomId;
 
@@ -128,7 +129,7 @@ io.on('connection', socket => {
   });
   // sending the peer-to-peer offer from broadcaster to the watcher
   socket.on('offer', (id, message) => {
-    console.log('offer ');
+    console.log('offer ',message);
     socket.to(id).emit('offer', socket.id, message);
   });
   // sending the watcher answer of its own room broadcaster offer  to that broadcaster 
@@ -172,7 +173,7 @@ io.on('connection', socket => {
     }
   });
   socket.on('add-connected', payload => {
-    console.log(payload);
+    console.log('we',payload);
     socket.username = {
       username: payload.username,
       roomId: payload.actualRoomId,
