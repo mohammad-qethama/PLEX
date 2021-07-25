@@ -45,7 +45,6 @@ async function postHandler(req,res,next){
     try {
         let reqObj ={}; 
         reqObj =req.body;
-        reqObj['room_owner']= req.cookies['username'];
         let resObj = await eventsMngr.create(reqObj);
         res.status(201).json(resObj);
 
