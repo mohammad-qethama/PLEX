@@ -34,13 +34,23 @@ module.exports = async (req, res, next) => {
       console.log('inside middleware3');
       let document = await UserModel.findOne({ username: obj.username });
       if (document) {
-        res.cookie('token', document.token);
-        res.cookie('username', document.username.split('@')[0]);
+        res.send ({
+          token : document.token,
+          username : document.username.split('@')[0]
+        })
+        // res.cookie('token', document.token);
+        // res.cookie('username', document.username.split('@')[0]);
+        res.end()
       } else {
         let user = new UserModel(obj); //news
         const userRecord = await user.save(); //news
-        res.cookie('token', userRecord.token);
-        res.cookie('username', userRecord.username.split('@')[0]);
+        res.send ({
+          token : userRecord.token,
+          username : userRecord.username.split('@')[0]
+        })
+        // res.cookie('token', userRecord.token);
+        // res.cookie('username', userRecord.username.split('@')[0]);
+        res.end()
       }
     } catch (error) {
       // news
@@ -53,7 +63,10 @@ module.exports = async (req, res, next) => {
   verify()
     .then(() => {
       req.user = user;
-      next();
+
+      // next();
+      // res.end()
+
     })
     .catch(error => {
       // res.redirect('/login');
