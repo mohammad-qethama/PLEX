@@ -15,7 +15,7 @@ let Event =new  mongoose.Schema(
     privacy:{type:String ,enum:['private','public'],default:'public',required:true},
     room_owner:{type:String,required:true,},
     roomId: { type: String  },
-
+    password : { type: String  },
   },
 );
 
