@@ -14,6 +14,8 @@ let Event =new  mongoose.Schema(
     type:{type:String ,enum:['online','real_word'],default:'online',required:true},
     privacy:{type:String ,enum:['private','public'],default:'public',required:true},
     room_owner:{type:String,required:true,},
+    roomId: { type: String  },
+
   },
 );
 
