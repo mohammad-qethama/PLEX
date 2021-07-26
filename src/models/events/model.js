@@ -12,6 +12,7 @@ let Event =new  mongoose.Schema(
     address :{type: String ,required:true},
     catagories:{type:String, required:true},
     type:{type:String ,enum:['online','real_word'],default:'online',required:true},
+    privacy:{type:String ,enum:['private','public'],default:'public',required:true},
     room_owner:{type:String,required:true,},
   },
 );
