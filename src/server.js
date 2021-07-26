@@ -169,6 +169,7 @@ io.on('connection', socket => {
     // console.log(io.sockets.sockets.get(socketId));
     if (io.sockets.sockets.get(socketId)) {
       // console.log('IAM INNNNNNNNNNNNNNNNNNNNNN');
+      socket.to(socketId).emit('kick-watcher');
       io.sockets.sockets.get(socketId).disconnect();
     }
   });
