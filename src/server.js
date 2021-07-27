@@ -21,6 +21,8 @@ const multer = require('multer');
 const multParse = multer();
 
 const eventRoutes = require('./routes/events.js');
+const configRoutes = require('./routes/config.js');
+
 const moment = require('moment'); //chat
 
 const cookieParser = require('cookie-parser'); //new
@@ -44,6 +46,10 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 //routes
 app.use('/events', eventRoutes);
+
+app.use('/configs', configRoutes);
+
+
 
 app.use(router);
 //catchalls

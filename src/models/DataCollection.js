@@ -21,6 +21,10 @@ class DataCollection {
   delete(_id) {
     return this.model.findByIdAndDelete(_id);
   }
+  deleteAll () {
+    return this.model.deleteMany({});
+
+  }
 }
 
 module.exports = DataCollection;
