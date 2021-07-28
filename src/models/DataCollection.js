@@ -22,7 +22,7 @@ class DataCollection {
     return this.model.findByIdAndDelete(_id);
   }
   deleteAll () {
-    return this.model.deleteMany({});
+    return this.model.deleteMany();
 
   }
 }

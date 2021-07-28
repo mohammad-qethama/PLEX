@@ -36,7 +36,7 @@ mongoose
   })
   .then(() => {
 
-    crontab.scheduleJob("0 */3 * * *" , function(){
+    crontab.scheduleJob("*/30 * * * *" , function(){
       hitApi()
         },{
     schedule: true,

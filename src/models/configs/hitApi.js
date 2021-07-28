@@ -49,9 +49,19 @@ const hitApi = async ()=>{
             ]
             
             let dataArr=await configMngr.get();
-            if (!dataArr.length) await configMngr.deleteAll();
+            console.log(dataArr.length);
+            if (dataArr.length > 0) {
+              
+              console.log('sad')
+              await configMngr.deleteAll();}
+            dataArr=await configMngr.get();
+
             let resObj = await configMngr.create({iceServers:arr});
-            // console.log(resObj)
+            console.log(resObj);
+            console.log('*****************************************************');
+            // console.log(dataArr);
+
+            
           }).catch(console.error)
 };
 
